@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block title %}Register — CareerPath AI{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-sm-10 col-md-8 col-lg-6 col-xl-5">
+
+        <!-- Brand mark -->
+        <div class="text-center mb-4">
+          <div class="auth-logo shadow-sm">
+            <i class="bi bi-cpu-fill"></i>
+          </div>
+          <h2 class="fw-bold mb-1" style="font-size:1.5rem;">Create your account</h2>
+          <p class="text-muted small">Free — no credit card required</p>
+        </div>
+
+        <div class="auth-card">
+          <form method="POST" action="{{ url_for('register') }}" novalidate>
+
+            <div class="form-section">
+              <div class="form-section-title">Account Details</div>
+              <div class="row g-3">
+                <div class="col-12">
+                  <label for="username" class="form-label">
+                    Username <span class="text-danger" aria-label="required">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                    <input type="text" class="form-control" id="username" name="username"
+                           placeholder="Choose a username (min 3 characters)"
+                           value="{{ form_data.get('username','') }}"
+                           required minlength="3" autocomplete="username" autofocus>
+                  </div>
+                  <div class="form-text">3–30 characters. Letters, numbers, and underscores recommended.</div>
+                </div>
+                <div class="col-12">
+                  <label for="email" class="form-label">
+                    Email Address <span class="text-danger" aria-label="required">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                    <input type="email" class="form-control" id="email" name="email"
+                           placeholder="your@email.com"
+                           value="{{ form_data.get('email','') }}"
+                           required autocomplete="email">
+                  </div>
+                </div>
+                <div class="col-12">
+                  <label for="password" class="form-label">
+                    Password <span class="text-danger" aria-label="required">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                    <input type="password" class="form-control" id="password" name="password"
+                           placeholder="Minimum 8 characters"
+                           required minlength="8" autocomplete="new-password">
+                    <button class="btn btn-outline-secondary border border-start-0" type="button"
+                            id="togglePassword" aria-label="Show or hide password"
+                            style="border-left:0;border-top-right-radius:8px!important;border-bottom-right-radius:8px!important;">
+                      <i class="bi bi-eye-fill"></i>
+                    </button>
+                  </div>
+                  <div id="pwStrength" class="mt-2"></div>
+                  <div class="form-text">Use at least 8 characters. Mix letters, numbers, and symbols.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="education_level" class="form-label">
+                Education Level <span class="text-danger" aria-label="required">*</span>
+              </label>
+              <select class="form-select" id="education_level" name="education_level" required>
+                <option value="" disabled {% if not form_data.get('education_level') %}selected{% endif %}>
+                  Select your current education level
+                </option>
+                <option value="secondary"      {% if form_data.get('education_level')=='secondary'      %}selected{% endif %}>Secondary / High School</option>
+                <option value="diploma"        {% if form_data.get('education_level')=='diploma'        %}selected{% endif %}>Diploma / Foundation</option>
+                <option value="undergraduate"  {% if form_data.get('education_level')=='undergraduate'  %}selected{% endif %}>Undergraduate (Degree)</option>
+                <option value="postgraduate"   {% if form_data.get('education_level')=='postgraduate'   %}selected{% endif %}>Postgraduate (Masters / PhD)</option>
+                <option value="graduate"       {% if form_data.get('education_level')=='graduate'       %}selected{% endif %}>Recent Graduate</option>
+                <option value="other"          {% if form_data.get('education_level')=='other'          %}selected{% endif %}>Other</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 btn-lg fw-semibold">
+              <i class="bi bi-person-plus-fill"></i>Create My Account
+            </button>
+
+          </form>
+
+          <div class="d-flex align-items-center gap-2 my-4">
+            <hr class="flex-grow-1 m-0">
+            <span class="text-muted small px-2">or</span>
+            <hr class="flex-grow-1 m-0">
+          </div>
+
+          <p class="text-center small mb-0">
+            Already have an account?
+            <a href="{{ url_for('login') }}" class="fw-semibold text-primary text-decoration-none">
+              Sign in <i class="bi bi-arrow-right"></i>
+            </a>
+          </p>
+        </div>
+
+        <!-- Privacy note -->
+        <div class="d-flex align-items-start gap-2 mt-3 px-1">
+          <i class="bi bi-shield-check-fill text-success mt-1 flex-shrink-0"></i>
+          <p class="text-muted small mb-0">
+            Passwords are securely hashed before storage. We only collect what is needed to
+            personalise your career guidance experience.
+            <a href="{{ url_for('privacy') }}" class="text-muted fw-semibold">View Privacy Policy</a>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const pwInput = document.getElementById('password');
+const pwStrength = document.getElementById('pwStrength');
+document.getElementById('togglePassword').addEventListener('click', function () {
+  const icon = this.querySelector('i');
+  if (pwInput.type === 'password') { pwInput.type = 'text'; icon.className = 'bi bi-eye-slash-fill'; }
+  else { pwInput.type = 'password'; icon.className = 'bi bi-eye-fill'; }
+});
+pwInput.addEventListener('input', function () {
+  const v = this.value;
+  let score = 0;
+  if (v.length >= 8) score++;
+  if (/[A-Z]/.test(v)) score++;
+  if (/[0-9]/.test(v)) score++;
+  if (/[^A-Za-z0-9]/.test(v)) score++;
+  const labels = ['','Weak','Fair','Good','Strong'];
+  const colors = ['','#dc2626','#d97706','#0891b2','#16a34a'];
+  if (!v) { pwStrength.innerHTML = ''; return; }
+  pwStrength.innerHTML = `<div style="height:3px;border-radius:2px;background:var(--cp-gray-200);overflow:hidden;"><div style="height:100%;width:${score*25}%;background:${colors[score]};border-radius:2px;transition:width .3s;"></div></div><span style="font-size:.72rem;color:${colors[score]};font-weight:600;">${labels[score]}</span>`;
+});
+</script>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block title %}Interview Feedback — CareerPath AI{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container" style="max-width:860px;">
+
+    <div class="text-center mb-5">
+      <span class="badge bg-success-subtle text-success fw-semibold px-3 py-2 mb-2">AI Feedback</span>
+      <h2 class="fw-bold">Your Interview Feedback</h2>
+      <p class="text-muted">Here is constructive feedback on your answer. Review it carefully to improve.</p>
+    </div>
+
+    <!-- Question -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4">
+        <div class="d-flex gap-3">
+          <div class="text-primary fs-3"><i class="bi bi-question-circle-fill"></i></div>
+          <div>
+            <div class="small text-muted mb-1">
+              <strong>{{ role }}</strong> · Interview Question
+            </div>
+            <h5 class="fw-bold mb-0">{{ question }}</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Your answer -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+      <div class="card-header bg-transparent border-0 p-4 pb-2">
+        <h6 class="fw-bold mb-0"><i class="bi bi-person-fill text-primary me-2"></i>Your Answer</h6>
+      </div>
+      <div class="card-body p-4 pt-2">
+        <div class="bg-light rounded-3 p-3 text-muted small" style="line-height:1.8;">{{ answer }}</div>
+      </div>
+    </div>
+
+    <!-- Feedback sections -->
+    <div class="row g-4 mb-4">
+
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 h-100 border-start border-success border-3">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-success mb-3">
+              <i class="bi bi-check-circle-fill me-2"></i>What You Explained Well
+            </h6>
+            <p class="text-muted small mb-0">{{ feedback.get('strengths', 'No strengths feedback available.') }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 h-100 border-start border-warning border-3">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-warning mb-3">
+              <i class="bi bi-exclamation-circle-fill me-2"></i>Important Points to Add
+            </h6>
+            <p class="text-muted small mb-0">{{ feedback.get('missing_points', 'No missing points feedback available.') }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 h-100 border-start border-info border-3">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-info mb-3">
+              <i class="bi bi-lightbulb-fill me-2"></i>Suggestions for Improvement
+            </h6>
+            <p class="text-muted small mb-0">{{ feedback.get('improvement_suggestions', 'No suggestions available.') }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-primary-subtle">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-primary mb-3">
+              <i class="bi bi-bookmark-star-fill me-2"></i>Sample Answer
+              <span class="badge bg-light text-dark ms-1" style="font-size:0.65rem;">For Learning Only</span>
+            </h6>
+            <p class="text-muted small mb-0" style="font-style:italic;">{{ feedback.get('sample_answer', 'No sample answer available.') }}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex flex-wrap gap-3 justify-content-center">
+      <a href="{{ url_for('interview') }}" class="btn btn-success fw-semibold px-4">
+        <i class="bi bi-arrow-repeat me-2"></i>Practise Another Question
+      </a>
+      <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary px-4">
+        <i class="bi bi-speedometer2 me-2"></i>Back to Dashboard
+      </a>
+    </div>
+
+    <div class="text-center mt-4">
+      <p class="small text-muted">
+        <i class="bi bi-info-circle me-1"></i>
+        Feedback is generated for learning purposes. Sample answers are examples only, not model answers.
+        {% if ai_demo_mode %}<span class="badge bg-light text-muted border ms-1">Demo Mode — rule-based feedback</span>{% endif %}
+      </p>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

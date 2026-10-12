@@ -1,0 +1,14 @@
+# ── Core framework ────────────────────────────────────────────────────────────
+Flask>=2.3.0,<4.0
+Werkzeug>=2.3.0,<4.0
+python-dotenv>=1.0.0
+
+# ── Production WSGI server ────────────────────────────────────────────────────
+# Gunicorn is the recommended WSGI server for Linux/macOS production deployments.
+# It is NOT required for local development (use `python app.py` instead).
+# On Windows, use waitress: pip install waitress
+#   waitress-serve --port=8000 wsgi:app
+gunicorn>=21.2.0,<24.0
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest>=7.4.0

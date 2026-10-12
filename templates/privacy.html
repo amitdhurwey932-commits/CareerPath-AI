@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Privacy Policy — CareerPath AI{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container" style="max-width:760px;">
+    <h1 class="fw-bold mb-4">Privacy Policy</h1>
+    <p class="text-muted small mb-4">Last updated: 2024 · CareerPath AI College Project</p>
+
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+      <h5 class="fw-bold mb-3">What Data We Collect</h5>
+      <ul class="text-muted">
+        <li class="mb-2"><strong>Registration data:</strong> Username, email address, hashed password, and education level.</li>
+        <li class="mb-2"><strong>Profile information:</strong> Degree, interests, skills, and career goals — provided voluntarily by you.</li>
+        <li class="mb-2"><strong>Usage data:</strong> Career recommendations, skill assessments, roadmap progress, saved projects, and interview practice sessions.</li>
+        <li>We do <strong>not</strong> collect payment information, national ID, or sensitive personal details.</li>
+      </ul>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+      <h5 class="fw-bold mb-3">Why We Collect It</h5>
+      <ul class="text-muted">
+        <li class="mb-2">To personalise your career recommendations and learning roadmaps.</li>
+        <li class="mb-2">To save your skill assessments and roadmap progress across sessions.</li>
+        <li>To provide you with a consistent, personalised experience on the platform.</li>
+      </ul>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+      <h5 class="fw-bold mb-3">How We Store It</h5>
+      <ul class="text-muted">
+        <li class="mb-2">Passwords are hashed using Werkzeug's secure password hashing (PBKDF2). Plain-text passwords are never stored.</li>
+        <li class="mb-2">All data is stored in a local SQLite database on the server running this application.</li>
+        <li>This is a college project running locally or on a controlled server. Your data is not shared with third parties.</li>
+      </ul>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+      <h5 class="fw-bold mb-3">AI API Usage</h5>
+      <p class="text-muted">
+        If an AI API key is configured, some of your profile information (interests, skills, career goals)
+        may be sent to a third-party AI provider to enhance recommendations or feedback.
+        No personally identifying information (name, email) is sent to the AI provider.
+        API keys are stored as environment variables and never exposed in frontend code.
+      </p>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 p-4">
+      <h5 class="fw-bold mb-3">Your Rights</h5>
+      <p class="text-muted mb-0">
+        You may request deletion of your account and all associated data by contacting the project administrator.
+        This is a college project. Data is used solely for demonstrating the platform's functionality.
+      </p>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

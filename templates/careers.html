@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% block title %}Explore Careers — CareerPath AI{% endblock %}
+
+{% block content %}
+
+<!-- Page header -->
+<div class="page-header">
+  <div class="container position-relative" style="z-index:2;">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div>
+        <div class="section-label section-label-blue mb-2">Career Directory</div>
+        <h2 class="fw-bold mb-1">Explore Career Paths</h2>
+        <p class="mb-0" style="color:rgba(255,255,255,.65);font-size:.9rem;">
+          Discover detailed information about careers across technology, data, design, and more.
+        </p>
+      </div>
+      {% if current_user %}
+      <a href="{{ url_for('recommend') }}" class="btn btn-warning fw-semibold">
+        <i class="bi bi-stars"></i>Get Matched
+      </a>
+      {% else %}
+      <a href="{{ url_for('register') }}" class="btn btn-warning fw-semibold">
+        <i class="bi bi-person-plus-fill"></i>Get Started Free
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<section class="py-4">
+  <div class="container">
+
+    <!-- Search & filter bar -->
+    <div class="card shadow-sm mb-4" style="border-radius:var(--r-lg)!important;">
+      <div class="card-body p-4">
+        <form method="GET" action="{{ url_for('careers') }}" class="row g-3 align-items-end">
+          <div class="col-md-5">
+            <label for="search" class="form-label">Search Careers</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-search"></i></span>
+              <input type="text" class="form-control" id="search" name="search"
+                     placeholder="e.g. Python, Data, Design..." value="{{ search }}">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label for="category" class="form-label">Category</label>
+            <select class="form-select" id="category" name="category">
+              <option value="">All Categories</option>
+              {% for cat in categories|sort %}
+              <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>{{ cat|title }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary flex-grow-1">
+              <i class="bi bi-funnel"></i>Filter
+            </button>
+            {% if selected_category or search %}
+            <a href="{{ url_for('careers') }}" class="btn btn-outline-secondary">
+              <i class="bi bi-x-lg"></i>
+            </a>
+            {% endif %}
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Category pills -->
+    <div class="d-flex flex-wrap gap-2 mb-4">
+      <a href="{{ url_for('careers') }}"
+         class="btn btn-sm {% if not selected_category %}btn-primary{% else %}btn-outline-secondary{% endif %}"
+         style="border-radius:100px!important;">
+        All
+      </a>
+      {% for cat in categories|sort %}
+      <a href="{{ url_for('careers', category=cat) }}"
+         class="btn btn-sm {% if cat == selected_category %}btn-primary{% else %}btn-outline-secondary{% endif %}"
+         style="border-radius:100px!important;">
+        {{ cat|title }}
+      </a>
+      {% endfor %}
+    </div>
+
+    <!-- Count -->
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <span class="text-muted small">
+        Showing <strong>{{ careers|length }}</strong> career{% if careers|length != 1 %}s{% endif %}
+        {% if selected_category %} in <strong>{{ selected_category|title }}</strong>{% endif %}
+        {% if search %} matching "<strong>{{ search }}</strong>"{% endif %}
+      </span>
+    </div>
+
+    <!-- Career cards -->
+    {% set cat_colors = {'technology':'var(--cp-blue-700)','data':'#0891b2','design':'#d97706','security':'#dc2626','marketing':'#16a34a'} %}
+    {% set cat_icons  = {'technology':'laptop','data':'database-fill','design':'palette-fill','security':'shield-lock-fill','marketing':'megaphone-fill'} %}
+
+    {% if careers %}
+    <div class="row g-4">
+      {% for career in careers %}
+      {% set color = cat_colors.get(career.category, '#64748b') %}
+      {% set icon  = cat_icons.get(career.category, 'briefcase-fill') %}
+      <div class="col-md-6 col-lg-4">
+        <div class="career-card d-flex flex-column">
+          <!-- Accent bar -->
+          <div class="career-card-accent" style="background:{{ color }};"></div>
+
+          <div class="p-4 d-flex flex-column flex-grow-1">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="d-flex align-items-center justify-content-center rounded-3 text-white flex-shrink-0"
+                   style="width:44px;height:44px;background:{{ color }};font-size:1.15rem;">
+                <i class="bi bi-{{ icon }}"></i>
+              </div>
+              <div>
+                <span class="badge badge-pill mb-1"
+                      style="background:{{ color }}18;color:{{ color }};font-size:.68rem;">
+                  {{ career.category|title }}
+                </span>
+                <h6 class="fw-bold mb-0" style="font-size:.9375rem;">{{ career.title }}</h6>
+              </div>
+            </div>
+
+            <p class="text-muted small flex-grow-1 mb-3">
+              {{ career.description[:130] }}{% if career.description|length > 130 %}…{% endif %}
+            </p>
+
+            <!-- Key skills -->
+            <div class="mb-3">
+              <div class="form-section-title mb-2">Key Skills</div>
+              <div>
+                {% for skill in career.required_skills[:4] %}
+                <span class="skill-tag">{{ skill }}</span>
+                {% endfor %}
+                {% if career.required_skills|length > 4 %}
+                <span class="skill-tag" style="background:var(--cp-gray-100);color:var(--cp-gray-500);border-color:var(--cp-gray-200);">+{{ career.required_skills|length - 4 }} more</span>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="d-flex gap-2 pt-3 border-top" style="border-color:var(--cp-gray-100)!important;">
+              <a href="{{ url_for('career_detail', career_key=career.key) }}"
+                 class="btn btn-primary btn-sm flex-grow-1">
+                View Details
+              </a>
+              {% if current_user %}
+              <a href="{{ url_for('roadmap', career=career.key) }}"
+                 class="btn btn-outline-primary btn-sm" title="Start Roadmap">
+                <i class="bi bi-map"></i>
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="card shadow-sm text-center py-5">
+      <div class="card-body">
+        <div style="font-size:3rem;color:var(--cp-gray-300,#cbd5e1);margin-bottom:16px;"><i class="bi bi-search"></i></div>
+        <h5 class="fw-bold">No careers found</h5>
+        <p class="text-muted small mb-3">Try adjusting your search terms or removing the category filter.</p>
+        <a href="{{ url_for('careers') }}" class="btn btn-primary btn-sm">Clear Filters</a>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+{% endblock %}

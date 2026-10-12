@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}About — CareerPath AI{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+
+    <!-- Hero -->
+    <div class="text-center mb-5">
+      <div class="mb-3"><i class="bi bi-cpu-fill display-3 text-primary"></i></div>
+      <h1 class="fw-bold">About CareerPath AI</h1>
+      <p class="text-muted lead">An AI-powered career guidance platform for students and graduates</p>
+    </div>
+
+    <div class="row g-5 mb-5">
+      <div class="col-lg-6">
+        <h3 class="fw-bold mb-3">Project Objective</h3>
+        <p class="text-muted">
+          CareerPath AI was built as a college project to demonstrate how artificial intelligence
+          and modern web technology can support career guidance and skill development for students,
+          fresh graduates, and job seekers.
+        </p>
+        <p class="text-muted">
+          The platform helps users discover suitable career options, identify skill gaps,
+          generate personalised learning roadmaps, find practical project ideas,
+          prepare resumes, and practise for interviews.
+        </p>
+        <p class="text-muted mb-0">
+          All career recommendations are for guidance purposes only.
+          They do not guarantee employment or accurately predict career success.
+        </p>
+      </div>
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-primary text-white h-100">
+          <div class="mb-3"><i class="bi bi-award-fill fs-1 text-warning"></i></div>
+          <h4 class="fw-bold">SDG 8 — Decent Work &amp; Economic Growth</h4>
+          <p class="text-white-75 mb-0">
+            This project directly supports United Nations Sustainable Development Goal 8,
+            which promotes sustained, inclusive, and sustainable economic growth,
+            full and productive employment, and decent work for all.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features overview -->
+    <h3 class="fw-bold text-center mb-4">Platform Features</h3>
+    <div class="row g-3 mb-5">
+      {% set features = [
+        ('AI Career Recommendations','stars','warning','Intelligent career matching based on your education, skills, interests, and goals.'),
+        ('Skill Gap Analysis','bar-chart-fill','info','Identify which skills you already have and which ones to develop for your target career.'),
+        ('Learning Roadmaps','map-fill','primary','Step-by-step learning paths for eight major career areas with progress tracking.'),
+        ('Project Ideas','lightbulb-fill','success','Curated project recommendations by career and difficulty to build your portfolio.'),
+        ('Resume Assistant','file-earmark-person-fill','danger','Generate a structured professional resume draft from your own information.'),
+        ('Interview Preparation','chat-dots-fill','secondary','Practise common interview questions and receive detailed constructive feedback.'),
+      ] %}
+      {% for title, icon, color, desc in features %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm rounded-3 h-100 p-3">
+          <div class="d-flex gap-3 align-items-start">
+            <div class="text-{{ color }} fs-3 mt-1"><i class="bi bi-{{ icon }}"></i></div>
+            <div>
+              <div class="fw-semibold small">{{ title }}</div>
+              <div class="text-muted" style="font-size:0.78rem;">{{ desc }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Tech stack -->
+    <div class="card border-0 shadow-sm rounded-4 mb-5">
+      <div class="card-body p-4">
+        <h4 class="fw-bold mb-4 text-center">Technology Stack</h4>
+        <div class="row g-4 text-center">
+          {% set stack = [
+            ('Frontend','laptop','Python Flask + Jinja2 templates, Bootstrap 5, JavaScript'),
+            ('Backend','server','Python, Flask, Werkzeug'),
+            ('Database','database-fill','SQLite with parameterised queries'),
+            ('AI Integration','cpu-fill','Configurable AI API (OpenAI-compatible) with rule-based fallback'),
+          ] %}
+          {% for label, icon, desc in stack %}
+          <div class="col-md-6 col-lg-3">
+            <div class="p-3 rounded-3 bg-light h-100">
+              <div class="fs-2 text-primary mb-2"><i class="bi bi-{{ icon }}"></i></div>
+              <div class="fw-semibold small mb-1">{{ label }}</div>
+              <div class="text-muted" style="font-size:0.75rem;">{{ desc }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="card border-warning border-1 rounded-4">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-3"><i class="bi bi-shield-exclamation text-warning me-2"></i>Important Disclaimer</h5>
+        <ul class="text-muted small mb-0">
+          <li class="mb-2">Career recommendations are provided for educational guidance purposes only.</li>
+          <li class="mb-2">They do not guarantee employment or accurately predict career success.</li>
+          <li class="mb-2">Career requirements vary by employer, location, and industry.</li>
+          <li class="mb-2">Interview sample answers are examples for learning, not model answers.</li>
+          <li class="mb-0">The platform does not collect unnecessary sensitive information. See the <a href="{{ url_for('privacy') }}">Privacy Policy</a>.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,60 @@
+# render.yaml — Render Blueprint for CareerPath AI
+# https://render.com/docs/blueprint-spec
+#
+# This file lets Render auto-configure the service when you connect the
+# repository.  Environment variables marked sync: false must be filled in
+# manually in the Render dashboard (they are never stored in this file).
+
+services:
+  - type: web
+    name: careerpath-ai
+    runtime: python
+    region: oregon          # change to: frankfurt, singapore, ohio, etc.
+    plan: free              # upgrade to starter ($7/mo) for persistent disk
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -c gunicorn.conf.py wsgi:app
+    healthCheckPath: /health
+
+    envVars:
+      # ── Flask ──────────────────────────────────────────────────────────────
+      - key: FLASK_ENV
+        value: production
+
+      - key: SECRET_KEY
+        generateValue: true   # Render generates a random value automatically
+
+      # ── Proxy ──────────────────────────────────────────────────────────────
+      # Render terminates TLS and proxies to your service — always 1 hop.
+      - key: PROXY_COUNT
+        value: "1"
+
+      - key: FORWARDED_ALLOW_IPS
+        value: "*"            # Render proxy IPs are not fixed
+
+      # ── Database ───────────────────────────────────────────────────────────
+      # Free plan: SQLite stored in /tmp — resets on every deploy.
+      # Paid plan: attach a Render Disk and set DATABASE_PATH=/data/careerpath.db
+      - key: DATABASE_PATH
+        value: /tmp/careerpath.db
+
+      # ── Admin credentials ──────────────────────────────────────────────────
+      # Set these in the Render dashboard — do NOT add real values here.
+      - key: ADMIN_USERNAME
+        sync: false           # fill in the Render dashboard
+
+      - key: ADMIN_EMAIL
+        sync: false
+
+      - key: ADMIN_PASSWORD
+        sync: false           # use a strong password
+
+      # ── AI API (optional) ──────────────────────────────────────────────────
+      # Leave unset to run in demo mode (rule-based recommendations only).
+      - key: AI_API_KEY
+        sync: false
+
+      - key: AI_API_URL
+        value: https://api.openai.com/v1/chat/completions
+
+      - key: AI_MODEL
+        value: gpt-3.5-turbo

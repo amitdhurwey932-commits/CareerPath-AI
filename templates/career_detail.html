@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% block title %}{{ career.title }} — CareerPath AI{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('careers') }}">Careers</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ career.title }}</li>
+      </ol>
+    </nav>
+
+    {% set cat_colors = {'technology':'primary','data':'info','design':'warning','security':'danger','marketing':'success'} %}
+    {% set color = cat_colors.get(career.category, 'secondary') %}
+
+    <!-- Header card -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4">
+        <div class="row align-items-center g-4">
+          <div class="col-md-8">
+            <span class="badge bg-{{ color }}-subtle text-{{ color }} fw-semibold mb-2">{{ career.category|title }}</span>
+            <h2 class="fw-bold mb-3">{{ career.title }}</h2>
+            <p class="text-muted mb-4">{{ career.description }}</p>
+            <div class="d-flex flex-wrap gap-2">
+              {% if current_user %}
+              <a href="{{ url_for('recommend') }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-stars me-1"></i>Get Matched
+              </a>
+              <a href="{{ url_for('roadmap', career=career.key) }}" class="btn btn-outline-info btn-sm">
+                <i class="bi bi-map me-1"></i>Start Roadmap
+              </a>
+              <a href="{{ url_for('skill_assessment', career=career.key) }}" class="btn btn-outline-warning btn-sm">
+                <i class="bi bi-bar-chart me-1"></i>Assess My Skills
+              </a>
+              {% else %}
+              <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-person-plus me-1"></i>Register to Track Progress
+              </a>
+              {% endif %}
+            </div>
+          </div>
+          <div class="col-md-4 text-center">
+            <div class="rounded-4 p-4 bg-{{ color }}-subtle">
+              <div class="display-3 text-{{ color }} mb-2"><i class="bi bi-briefcase-fill"></i></div>
+              <div class="fw-bold">{{ career.title }}</div>
+              <div class="text-muted small">{{ career.required_skills|length }} core skills</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-8">
+
+        <!-- Responsibilities -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-list-check text-primary me-2"></i>Typical Responsibilities</h5>
+            <ul class="list-unstyled mb-0">
+              {% for resp in career.responsibilities %}
+              <li class="d-flex align-items-start gap-2 mb-2">
+                <i class="bi bi-check-circle-fill text-success mt-1" style="font-size:0.85rem;"></i>
+                <span class="small">{{ resp }}</span>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Required Skills -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-tools text-warning me-2"></i>Commonly Required Skills</h5>
+            <div class="row g-2">
+              {% for skill in career.required_skills %}
+              <div class="col-auto">
+                <span class="badge bg-{{ color }}-subtle text-{{ color }} border border-{{ color }}-subtle px-3 py-2">
+                  {{ skill }}
+                </span>
+              </div>
+              {% endfor %}
+            </div>
+            {% if career.soft_skills %}
+            <hr>
+            <h6 class="fw-semibold mb-2 small text-muted">Soft Skills</h6>
+            <div>
+              {% for skill in career.soft_skills %}
+              <span class="badge bg-light text-dark border me-1 mb-1">{{ skill }}</span>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Learning Topics -->
+        {% if career.learning_topics %}
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-book-fill text-info me-2"></i>Useful Learning Topics</h5>
+            <div class="row g-2">
+              {% for topic in career.learning_topics %}
+              <div class="col-md-6">
+                <div class="d-flex align-items-center gap-2 p-2 rounded-3 bg-light">
+                  <div class="badge bg-info text-white rounded-circle d-flex align-items-center justify-content-center" style="width:24px;height:24px;min-width:24px;font-size:0.7rem;">{{ loop.index }}</div>
+                  <span class="small">{{ topic }}</span>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Learning Roadmap Preview -->
+        {% if roadmap %}
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <h5 class="fw-bold mb-0"><i class="bi bi-map-fill text-primary me-2"></i>Learning Roadmap Preview</h5>
+              <a href="{{ url_for('roadmap', career=career.key) }}" class="btn btn-primary btn-sm">Full Roadmap</a>
+            </div>
+            <div class="roadmap-preview">
+              {% for step in roadmap[:5] %}
+              <div class="d-flex gap-3 mb-3">
+                <div class="roadmap-step-num d-flex align-items-center justify-content-center rounded-circle bg-primary text-white fw-bold" style="width:32px;height:32px;min-width:32px;font-size:0.8rem;">
+                  {{ step.step }}
+                </div>
+                <div class="flex-grow-1">
+                  <div class="fw-semibold small">{{ step.topic }}</div>
+                  <div class="text-muted" style="font-size:0.75rem;">{{ step.explanation[:80] }}{% if step.explanation|length > 80 %}…{% endif %}</div>
+                  <div class="text-muted" style="font-size:0.7rem;"><i class="bi bi-clock me-1"></i>{{ step.duration }}</div>
+                </div>
+              </div>
+              {% endfor %}
+              {% if roadmap|length > 5 %}
+              <div class="text-muted small text-center pt-2 border-top">
+                + {{ roadmap|length - 5 }} more steps.
+                <a href="{{ url_for('roadmap', career=career.key) }}">View full roadmap</a>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Related Projects -->
+        {% if related_projects %}
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-lightbulb-fill text-warning me-2"></i>Example Projects</h5>
+            <div class="row g-3">
+              {% for proj in related_projects %}
+              <div class="col-md-6">
+                <div class="card border-0 bg-light rounded-3 h-100 p-3">
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h6 class="fw-semibold small mb-0">{{ proj.title }}</h6>
+                    <span class="badge bg-{{ 'success' if proj.difficulty == 'beginner' else 'warning text-dark' if proj.difficulty == 'intermediate' else 'danger' }}">
+                      {{ proj.difficulty|title }}
+                    </span>
+                  </div>
+                  <p class="text-muted small mb-2">{{ proj.description[:100] }}{% if proj.description|length > 100 %}…{% endif %}</p>
+                  <div class="mt-auto">
+                    {% for tech in proj.technologies[:3] %}
+                    <span class="badge bg-white border text-muted me-1" style="font-size:0.65rem;">{{ tech }}</span>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            <div class="mt-3">
+              <a href="{{ url_for('projects', career=career.key) }}" class="btn btn-outline-warning btn-sm">
+                <i class="bi bi-lightbulb me-1"></i>View All Projects
+              </a>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+
+      <div class="col-lg-4">
+
+        <!-- Entry routes -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+          <div class="card-body p-4">
+            <h6 class="fw-bold mb-3"><i class="bi bi-signpost-fill text-success me-2"></i>Typical Entry Routes</h6>
+            <ul class="list-unstyled mb-0">
+              {% for route in career.entry_routes %}
+              <li class="d-flex align-items-start gap-2 mb-2">
+                <i class="bi bi-arrow-right-circle-fill text-success mt-1" style="font-size:0.8rem;"></i>
+                <span class="small">{{ route }}</span>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Career progression -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+          <div class="card-body p-4">
+            <h6 class="fw-bold mb-3"><i class="bi bi-graph-up-arrow text-primary me-2"></i>Potential Career Progression</h6>
+            {% for path in career.career_progression %}
+            <p class="small text-muted mb-0">{{ path }}</p>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="card border-warning border-1 rounded-4">
+          <div class="card-body p-3">
+            <div class="small text-muted">
+              <i class="bi bi-exclamation-triangle-fill text-warning me-1"></i>
+              <strong>Note:</strong> Career information is provided for guidance purposes only.
+              Requirements vary by employer and location. We do not publish live vacancies
+              or salary figures.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

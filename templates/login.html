@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Login — CareerPath AI{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-sm-10 col-md-7 col-lg-5 col-xl-4">
+
+        <!-- Brand mark -->
+        <div class="text-center mb-4">
+          <div class="auth-logo shadow-sm">
+            <i class="bi bi-cpu-fill"></i>
+          </div>
+          <h2 class="fw-bold mb-1" style="font-size:1.5rem;">Welcome back</h2>
+          <p class="text-muted small">Sign in to continue your career journey</p>
+        </div>
+
+        <div class="auth-card">
+          <form method="POST" action="{{ url_for('login') }}" novalidate>
+
+            <div class="mb-3">
+              <label for="identifier" class="form-label">Username or Email</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                <input type="text" class="form-control" id="identifier" name="identifier"
+                       placeholder="Enter username or email"
+                       required autocomplete="username" autofocus>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <label for="password" class="form-label mb-0">Password</label>
+              </div>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                <input type="password" class="form-control" id="password" name="password"
+                       placeholder="Enter your password"
+                       required autocomplete="current-password">
+                <button class="btn btn-outline-secondary border border-start-0" type="button"
+                        id="togglePassword" aria-label="Show or hide password"
+                        style="border-left:0;border-top-right-radius:8px!important;border-bottom-right-radius:8px!important;">
+                  <i class="bi bi-eye-fill"></i>
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 btn-lg fw-semibold">
+              Sign In
+            </button>
+
+          </form>
+
+          <div class="d-flex align-items-center gap-2 my-4">
+            <hr class="flex-grow-1 m-0">
+            <span class="text-muted small px-2">or</span>
+            <hr class="flex-grow-1 m-0">
+          </div>
+
+          <p class="text-center small mb-0">
+            Don't have an account?
+            <a href="{{ url_for('register') }}" class="fw-semibold text-primary text-decoration-none">
+              Create one free <i class="bi bi-arrow-right"></i>
+            </a>
+          </p>
+        </div>
+
+        <p class="text-center text-muted small mt-3">
+          <i class="bi bi-shield-lock-fill me-1 text-success"></i>
+          Passwords are securely hashed. We never store plain text credentials.
+          <a href="{{ url_for('privacy') }}" class="text-muted">Privacy Policy</a>
+        </p>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('togglePassword').addEventListener('click', function () {
+  const pw = document.getElementById('password');
+  const icon = this.querySelector('i');
+  if (pw.type === 'password') { pw.type = 'text'; icon.className = 'bi bi-eye-slash-fill'; }
+  else { pw.type = 'password'; icon.className = 'bi bi-eye-fill'; }
+});
+</script>
+{% endblock %}

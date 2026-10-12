@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+{% block title %}AI Career Recommendations — CareerPath AI{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <span class="badge bg-warning text-dark fw-semibold px-3 py-2 mb-2">
+        <i class="bi bi-stars me-1"></i>AI-Powered
+      </span>
+      <h2 class="fw-bold">Career Recommendations</h2>
+      <p class="text-muted">Tell us about yourself and we'll suggest careers that may suit your profile.</p>
+      <p class="small text-muted">
+        <i class="bi bi-info-circle me-1"></i>
+        Recommendations are based on your input and are for guidance only.
+        They do not guarantee employment or accurately predict career success.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <!-- ── Profile Form ──────────────────────────────────── -->
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 sticky-top" style="top:80px;">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-4">
+              <i class="bi bi-person-fill me-2 text-primary"></i>Your Profile
+            </h5>
+
+            {% if validation_errors %}
+            <div class="alert alert-warning rounded-3 small p-3 mb-3">
+              <div class="fw-semibold mb-1"><i class="bi bi-exclamation-triangle me-1"></i>Input notices:</div>
+              <ul class="mb-0 ps-3">
+                {% for err in validation_errors %}
+                <li>{{ err }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('recommend') }}" novalidate>
+
+              <div class="mb-3">
+                <label for="education_level" class="form-label fw-semibold small">Education Level</label>
+                <select class="form-select form-select-sm" id="education_level" name="education_level">
+                  <option value="">Select level</option>
+                  <option value="secondary">Secondary</option>
+                  <option value="diploma">Diploma</option>
+                  <option value="undergraduate" selected>Undergraduate</option>
+                  <option value="postgraduate">Postgraduate</option>
+                  <option value="graduate">Recent Graduate</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="degree_course" class="form-label fw-semibold small">Degree / Course</label>
+                <input type="text" class="form-control form-control-sm"
+                       id="degree_course" name="degree_course" maxlength="120"
+                       placeholder="e.g. Computer Science, Business"
+                       value="{{ profile['degree_course'] if profile and profile['degree_course'] else '' }}">
+              </div>
+
+              <div class="mb-3">
+                <label for="interests" class="form-label fw-semibold small">Interests</label>
+                <textarea class="form-control form-control-sm" id="interests" name="interests"
+                          rows="2" maxlength="500"
+                          placeholder="e.g. programming, data analysis, design">{{ profile['interests'] if profile and profile['interests'] else '' }}</textarea>
+              </div>
+
+              <div class="mb-3">
+                <label for="technical_skills" class="form-label fw-semibold small">Technical Skills</label>
+                <textarea class="form-control form-control-sm" id="technical_skills" name="technical_skills"
+                          rows="2" maxlength="500"
+                          placeholder="e.g. Python, HTML, SQL, Excel">{{ profile['technical_skills'] if profile and profile['technical_skills'] else '' }}</textarea>
+                <div class="form-text">Separate skills with commas.</div>
+              </div>
+
+              <div class="mb-3">
+                <label for="soft_skills" class="form-label fw-semibold small">Soft Skills</label>
+                <input type="text" class="form-control form-control-sm"
+                       id="soft_skills" name="soft_skills" maxlength="300"
+                       placeholder="e.g. communication, teamwork"
+                       value="{{ profile['soft_skills'] if profile and profile['soft_skills'] else '' }}">
+                <div class="form-text">Separate skills with commas.</div>
+              </div>
+
+              <div class="mb-3">
+                <label for="experience_level" class="form-label fw-semibold small">Experience Level</label>
+                <select class="form-select form-select-sm" id="experience_level" name="experience_level">
+                  <option value="beginner" {% if not profile or profile['experience_level'] == 'beginner' %}selected{% endif %}>
+                    Beginner (Student / No experience)
+                  </option>
+                  <option value="intermediate" {% if profile and profile['experience_level'] == 'intermediate' %}selected{% endif %}>
+                    Intermediate (Some projects / internships)
+                  </option>
+                  <option value="experienced" {% if profile and profile['experience_level'] == 'experienced' %}selected{% endif %}>
+                    Experienced (1–3 years)
+                  </option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="preferred_field" class="form-label fw-semibold small">Preferred Field</label>
+                <select class="form-select form-select-sm" id="preferred_field" name="preferred_field">
+                  <option value="">Not sure / Open to all</option>
+                  <option value="technology" {% if profile and profile['preferred_field'] == 'technology' %}selected{% endif %}>Technology</option>
+                  <option value="data"       {% if profile and profile['preferred_field'] == 'data'       %}selected{% endif %}>Data &amp; AI</option>
+                  <option value="design"     {% if profile and profile['preferred_field'] == 'design'     %}selected{% endif %}>Design</option>
+                  <option value="security"   {% if profile and profile['preferred_field'] == 'security'   %}selected{% endif %}>Security</option>
+                  <option value="marketing"  {% if profile and profile['preferred_field'] == 'marketing'  %}selected{% endif %}>Marketing</option>
+                </select>
+              </div>
+
+              <div class="mb-4">
+                <label for="career_goals" class="form-label fw-semibold small">Career Goals</label>
+                <textarea class="form-control form-control-sm" id="career_goals" name="career_goals"
+                          rows="2" maxlength="600"
+                          placeholder="e.g. I want to build AI applications and work in tech">{{ profile['career_goals'] if profile and profile['career_goals'] else '' }}</textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100 fw-semibold">
+                <i class="bi bi-stars me-2"></i>Get My Recommendations
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Results ──────────────────────────────────────── -->
+      <div class="col-lg-8">
+        {% if results %}
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <h5 class="fw-bold mb-0">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            {{ results|length }} Career{{ 's' if results|length != 1 }} Recommended
+          </h5>
+          <span class="badge bg-success-subtle text-success px-3 py-2">Based on your profile</span>
+        </div>
+
+        {% for r in results %}
+        {% set c = r['career'] %}
+
+        {# ── Confidence colour mapping ──────────────────── #}
+        {% if r['confidence'] == 'Strong Match' %}
+          {% set conf_cls = 'success' %}
+        {% elif r['confidence'] == 'Good Match' %}
+          {% set conf_cls = 'primary' %}
+        {% elif r['confidence'] == 'Possible Match' %}
+          {% set conf_cls = 'warning' %}
+        {% else %}
+          {% set conf_cls = 'secondary' %}
+        {% endif %}
+
+        {# ── Category colour mapping ───────────────────── #}
+        {% if c['category'] == 'technology' %}
+          {% set cat_colour = '#3b82d4' %}
+        {% elif c['category'] == 'data' %}
+          {% set cat_colour = '#7c5cd8' %}
+        {% elif c['category'] == 'design' %}
+          {% set cat_colour = '#e67e22' %}
+        {% elif c['category'] == 'security' %}
+          {% set cat_colour = '#e74c3c' %}
+        {% elif c['category'] == 'marketing' %}
+          {% set cat_colour = '#27ae60' %}
+        {% else %}
+          {% set cat_colour = '#57606a' %}
+        {% endif %}
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4{% if r['is_fallback'] %} opacity-75{% endif %}">
+          {# Coloured accent bar at the top #}
+          <div style="height:4px;background:{{ cat_colour }};border-radius:1rem 1rem 0 0;"></div>
+          <div class="card-body p-4">
+
+            {# ── Header row ─────────────────────────────── #}
+            <div class="d-flex align-items-start justify-content-between mb-3">
+              <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center justify-content-center rounded-3 text-white"
+                     style="width:52px;height:52px;font-size:1.4rem;min-width:52px;background:{{ cat_colour }};">
+                  <i class="bi bi-briefcase-fill"></i>
+                </div>
+                <div>
+                  <h5 class="fw-bold mb-1">{{ c['title'] }}</h5>
+                  <span class="badge me-1"
+                        style="background:{{ cat_colour }}1a;color:{{ cat_colour }};border:1px solid {{ cat_colour }}33;">
+                    {{ c['category']|title }}
+                  </span>
+                  {% if r['is_fallback'] %}
+                  <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">Exploratory</span>
+                  {% else %}
+                  <span class="badge bg-{{ conf_cls }}-subtle text-{{ conf_cls }} border border-{{ conf_cls }}-subtle">
+                    {{ r['confidence'] }}
+                  </span>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="text-end">
+                <div class="fs-4 fw-bold" style="color:{{ cat_colour }};">{{ r['match_score']|int }}%</div>
+                <div class="small text-muted">match</div>
+              </div>
+            </div>
+
+            {# ── Match progress bar ──────────────────────── #}
+            <div class="progress mb-3" style="height:6px;">
+              <div class="progress-bar" role="progressbar"
+                   style="width:{{ r['match_score']|int }}%;background:{{ cat_colour }};"
+                   aria-valuenow="{{ r['match_score']|int }}" aria-valuemin="0" aria-valuemax="100">
+              </div>
+            </div>
+
+            <p class="text-muted small mb-3">{{ c['description'] }}</p>
+
+            {# ── AI or rule-based explanation ───────────── #}
+            {% if r.get('ai_explanation') %}
+            <div class="alert alert-primary rounded-3 p-3 mb-3 small" style="background:#eff6ff;border-color:#bfdbfe;">
+              <i class="bi bi-stars text-warning me-2"></i>
+              <strong>Why this may suit you:</strong> {{ r['ai_explanation'] }}
+            </div>
+            {% elif r.get('match_reasons') and not r['is_fallback'] %}
+            <div class="alert alert-light rounded-3 p-3 mb-3 small border">
+              <strong>Matching factors:</strong>
+              <ul class="mb-0 mt-1 ps-3">
+                {% for reason in r['match_reasons'] %}
+                <li>{{ reason }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+
+            {# ── Match breakdown accordion ───────────────── #}
+            {% if r.get('match_breakdown') and not r['is_fallback'] %}
+            <details class="mb-3">
+              <summary class="small fw-semibold text-muted" style="cursor:pointer;user-select:none;">
+                <i class="bi bi-bar-chart-line me-1"></i>Score breakdown
+              </summary>
+              <div class="mt-2">
+                <table class="table table-sm table-borderless small mb-0">
+                  <tbody>
+                    {% for dim in r['match_breakdown'] %}
+                    <tr>
+                      <td class="text-muted py-1" style="width:40%;">{{ dim['dimension'] }}</td>
+                      <td class="py-1" style="width:45%;">
+                        <div class="progress" style="height:5px;">
+                          <div class="progress-bar bg-primary" role="progressbar"
+                               style="width:{{ ((dim['points'] / dim['max']) * 100)|int if dim['max'] > 0 else 0 }}%;"
+                               aria-valuenow="{{ dim['points'] }}" aria-valuemin="0" aria-valuemax="{{ dim['max'] }}">
+                          </div>
+                        </div>
+                      </td>
+                      <td class="py-1 text-end text-muted">{{ dim['points'] }}/{{ dim['max'] }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </details>
+            {% endif %}
+
+            {# ── Skills grid ─────────────────────────────── #}
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <div class="small fw-semibold mb-2 text-success">
+                  <i class="bi bi-check-circle me-1"></i>Skills You Have
+                </div>
+                {% if r['matched_skills'] %}
+                  {% for skill in r['matched_skills'][:6] %}
+                  <span class="badge bg-success-subtle text-success border border-success-subtle me-1 mb-1">{{ skill }}</span>
+                  {% endfor %}
+                {% else %}
+                  <span class="text-muted small">No direct matches found — that's okay, you can learn them!</span>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <div class="small fw-semibold mb-2 text-warning">
+                  <i class="bi bi-arrow-up-circle me-1"></i>Skills to Develop
+                </div>
+                {% if r['skill_gaps'] %}
+                  {% for skill in r['skill_gaps'][:6] %}
+                  <span class="badge bg-warning-subtle text-warning border border-warning-subtle me-1 mb-1">{{ skill }}</span>
+                  {% endfor %}
+                {% else %}
+                  <span class="text-muted small">Great — you already have most required skills!</span>
+                {% endif %}
+              </div>
+            </div>
+
+            {# ── Learning suggestions accordion ───────────── #}
+            {% if r.get('learning_suggestions') and r['skill_gaps'] %}
+            <details class="mb-3">
+              <summary class="small fw-semibold text-muted" style="cursor:pointer;user-select:none;">
+                <i class="bi bi-book me-1"></i>Suggested learning resources ({{ r['skill_gaps']|length }} gap{{ 's' if r['skill_gaps']|length != 1 }})
+              </summary>
+              <div class="mt-2">
+                {% for suggestion in r['learning_suggestions'][:6] %}
+                <div class="d-flex gap-2 align-items-start mb-2 small">
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="min-width:fit-content;">
+                    {{ suggestion['skill'] }}
+                  </span>
+                  <span class="text-muted">{{ suggestion['resource'] }}
+                    <em class="d-block text-muted" style="font-size:0.75rem;">{{ suggestion['estimated_hours'] }}</em>
+                  </span>
+                </div>
+                {% endfor %}
+              </div>
+            </details>
+            {% endif %}
+
+            {# ── Action buttons ───────────────────────────── #}
+            <div class="d-flex flex-wrap gap-2 pt-2 border-top">
+              <a href="{{ url_for('career_detail', career_key=c['key']) }}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-info-circle me-1"></i>Career Details
+              </a>
+              <a href="{{ url_for('roadmap', career=c['key']) }}" class="btn btn-outline-info btn-sm">
+                <i class="bi bi-map me-1"></i>Start Roadmap
+              </a>
+              <a href="{{ url_for('skill_assessment', career=c['key']) }}" class="btn btn-outline-warning btn-sm">
+                <i class="bi bi-bar-chart me-1"></i>Assess Skills
+              </a>
+            </div>
+
+          </div>{# /card-body #}
+        </div>{# /card #}
+        {% endfor %}
+
+        {% else %}
+        <!-- Empty state -->
+        <div class="card border-0 shadow-sm rounded-4 text-center py-5">
+          <div class="card-body">
+            <i class="bi bi-stars display-3 text-muted opacity-50 mb-3"></i>
+            <h5 class="fw-bold mb-2">Ready for Your Recommendations?</h5>
+            <p class="text-muted mb-4">
+              Fill in the form on the left and click <strong>Get My Recommendations</strong>
+              to discover careers that match your profile.
+            </p>
+            <div class="d-flex justify-content-center flex-wrap gap-3">
+              <div class="text-center">
+                <div class="text-primary fs-3"><i class="bi bi-person-fill"></i></div>
+                <div class="small text-muted">Enter profile</div>
+              </div>
+              <div class="text-center pt-1 text-muted">→</div>
+              <div class="text-center">
+                <div class="text-success fs-3"><i class="bi bi-stars"></i></div>
+                <div class="small text-muted">Get matches</div>
+              </div>
+              <div class="text-center pt-1 text-muted">→</div>
+              <div class="text-center">
+                <div class="text-info fs-3"><i class="bi bi-map-fill"></i></div>
+                <div class="small text-muted">Start roadmap</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>{# /col results #}
+    </div>{# /row #}
+  </div>{# /container #}
+</section>
+{% endblock %}

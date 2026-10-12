@@ -1,0 +1,320 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — CareerPath AI{% endblock %}
+
+{% block content %}
+
+<!-- ── Page header ───────────────────────────────────────────────── -->
+<div class="page-header">
+  <div class="container position-relative" style="z-index:2;">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="avatar-xl">{{ user['username'][0]|upper }}</div>
+        <div>
+          <h2 class="fw-bold mb-1" style="font-size:1.5rem;">
+            Welcome back, {{ user['username'] }}!
+          </h2>
+          <div class="d-flex flex-wrap gap-2 align-items-center">
+            <span class="badge" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.85);font-size:.72rem;">
+              <i class="bi bi-mortarboard-fill me-1"></i>{{ user['education_level']|title if user['education_level'] else 'Not set' }}
+            </span>
+            {% if profile and profile['preferred_field'] %}
+            <span class="badge" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.85);font-size:.72rem;">
+              <i class="bi bi-compass-fill me-1"></i>{{ profile['preferred_field']|title }}
+            </span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="{{ url_for('profile') }}" class="btn btn-sm btn-white">
+          <i class="bi bi-pencil-fill"></i>Edit Profile
+        </a>
+        <a href="{{ url_for('recommend') }}" class="btn btn-sm btn-warning fw-semibold">
+          <i class="bi bi-stars"></i>Recommendations
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Body ──────────────────────────────────────────────────────── -->
+<section class="py-4">
+  <div class="container">
+
+    <!-- Stat cards row -->
+    <div class="row g-3 mb-4">
+      {% set stat_items = [
+        (recommendations|length, 'Career Matches', 'briefcase-fill', 'var(--cp-blue-700)', 'var(--cp-blue-50)', url_for('recommend')),
+        (skills|length,          'Skills Assessed', 'bar-chart-fill', '#0891b2', '#ecfeff', url_for('skill_assessment')),
+        (roadmaps|length,        'Active Roadmaps', 'map-fill',       '#16a34a', '#f0fdf4', url_for('roadmap')),
+        (saved_projects|length,  'Saved Projects',  'lightbulb-fill', '#d97706', '#fffbeb', url_for('projects')),
+      ] %}
+      {% for value, label, icon, color, bg, link in stat_items %}
+      <div class="col-6 col-lg-3">
+        <a href="{{ link }}" class="text-decoration-none">
+          <div class="stat-card d-flex align-items-center gap-3 h-100">
+            <div class="stat-icon" style="background:{{ bg }};color:{{ color }};">
+              <i class="bi bi-{{ icon }}"></i>
+            </div>
+            <div>
+              <div class="stat-value">{{ value }}</div>
+              <div class="stat-label">{{ label }}</div>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="row g-4">
+
+      <!-- ── Main column ────────────────────────────────── -->
+      <div class="col-lg-8">
+
+        <!-- Career Recommendations card -->
+        <div class="card-section">
+          <div class="card-section-header">
+            <h5 class="card-section-title">
+              <i class="bi bi-stars" style="color:#f59e0b;"></i>My Career Recommendations
+            </h5>
+            <a href="{{ url_for('recommend') }}" class="btn btn-sm btn-outline-primary">
+              {% if recommendations %}Update{% else %}Get Started{% endif %}
+            </a>
+          </div>
+          <div class="card-section-body">
+            {% if recommendations %}
+              {% for rec in recommendations %}
+              <div class="list-item-row">
+                <div class="d-flex align-items-center gap-3 min-w-0">
+                  <div class="avatar-sm flex-shrink-0">
+                    {{ loop.index }}
+                  </div>
+                  <div class="min-w-0">
+                    <div class="fw-semibold small text-truncate">
+                      {{ rec['career_key']|replace('_',' ')|title }}
+                    </div>
+                    <div class="d-flex align-items-center gap-2 mt-1">
+                      <div class="progress flex-grow-1" style="width:80px;height:5px;">
+                        <div class="progress-bar" style="background:var(--cp-blue-700);width:{{ rec['match_score']|int }}%"></div>
+                      </div>
+                      <span style="font-size:.72rem;color:var(--cp-gray-500);">{{ rec['match_score']|int }}% match</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex gap-2 ms-2 flex-shrink-0">
+                  <a href="{{ url_for('career_detail', career_key=rec['career_key']) }}"
+                     class="btn btn-sm btn-outline-primary" style="font-size:.75rem;padding:4px 10px;">
+                    View
+                  </a>
+                  <a href="{{ url_for('roadmap', career=rec['career_key']) }}"
+                     class="btn btn-sm btn-outline-primary" style="font-size:.75rem;padding:4px 10px;">
+                    Roadmap
+                  </a>
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="text-center py-5">
+                <div style="font-size:2.5rem;color:var(--cp-gray-300,#cbd5e1);margin-bottom:12px;"><i class="bi bi-stars"></i></div>
+                <div class="fw-semibold mb-1" style="font-size:.9rem;">No recommendations yet</div>
+                <div class="text-muted small mb-3">Tell us about your skills and interests to get started.</div>
+                <a href="{{ url_for('recommend') }}" class="btn btn-primary btn-sm">
+                  <i class="bi bi-stars"></i>Get Recommendations
+                </a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Learning Roadmaps card -->
+        <div class="card-section">
+          <div class="card-section-header">
+            <h5 class="card-section-title">
+              <i class="bi bi-map-fill" style="color:#0891b2;"></i>My Learning Roadmaps
+            </h5>
+            <a href="{{ url_for('roadmap') }}" class="btn btn-sm btn-outline-primary">Add Roadmap</a>
+          </div>
+          <div class="card-section-body">
+            {% if roadmaps %}
+              {% for rm in roadmaps %}
+              {% set prog = roadmap_progress.get(rm['career_key'], {}) %}
+              <div class="list-item-row flex-column align-items-start gap-2">
+                <div class="d-flex align-items-center justify-content-between w-100">
+                  <div class="fw-semibold small">{{ rm['career_key']|replace('_',' ')|title }}</div>
+                  <div class="d-flex align-items-center gap-2">
+                    <span style="font-size:.75rem;font-weight:700;color:#0891b2;">{{ prog.get('pct', 0) }}%</span>
+                    <a href="{{ url_for('roadmap', career=rm['career_key']) }}"
+                       class="btn btn-sm btn-outline-primary" style="font-size:.72rem;padding:3px 10px;">
+                      Continue
+                    </a>
+                  </div>
+                </div>
+                <div class="w-100">
+                  <div class="progress" style="height:6px;">
+                    <div class="progress-bar" style="background:#0891b2;width:{{ prog.get('pct',0) }}%"></div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-1">
+                    <span class="text-muted" style="font-size:.7rem;">{{ prog.get('completed',0) }} of {{ prog.get('total',0) }} steps</span>
+                    {% if prog.get('pct',0) == 100 %}
+                    <span style="font-size:.7rem;color:#16a34a;font-weight:600;"><i class="bi bi-check-circle-fill me-1"></i>Complete</span>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="text-center py-5">
+                <div style="font-size:2.5rem;color:var(--cp-gray-300,#cbd5e1);margin-bottom:12px;"><i class="bi bi-map"></i></div>
+                <div class="fw-semibold mb-1" style="font-size:.9rem;">No roadmaps started yet</div>
+                <div class="text-muted small mb-3">Choose a career and start your learning journey.</div>
+                <a href="{{ url_for('roadmap') }}" class="btn btn-sm btn-primary">
+                  <i class="bi bi-map-fill"></i>Start a Roadmap
+                </a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Saved Projects card -->
+        <div class="card-section mb-0">
+          <div class="card-section-header">
+            <h5 class="card-section-title">
+              <i class="bi bi-lightbulb-fill" style="color:#d97706;"></i>My Projects
+            </h5>
+            <a href="{{ url_for('projects') }}" class="btn btn-sm btn-outline-primary">Browse Projects</a>
+          </div>
+          <div class="card-section-body">
+            {% if saved_projects %}
+              <div class="row g-2">
+                {% for proj in saved_projects %}
+                <div class="col-sm-6">
+                  <div class="list-item-row h-100 align-items-start flex-column gap-2 p-3">
+                    <div class="d-flex align-items-start justify-content-between w-100 gap-2">
+                      <div class="fw-semibold small">{{ proj['project_key']|replace('_',' ')|title }}</div>
+                      <span class="badge badge-pill flex-shrink-0
+                        {% if proj['status']=='completed' %}bg-success-subtle text-success
+                        {% elif proj['status']=='in_progress' %}bg-info-subtle text-info
+                        {% else %}bg-primary-subtle text-primary{% endif %}"
+                        style="font-size:.65rem;">
+                        {{ proj['status']|replace('_',' ')|title }}
+                      </span>
+                    </div>
+                    <a href="{{ url_for('projects') }}" class="btn btn-sm btn-outline-primary" style="font-size:.7rem;padding:3px 10px;">
+                      Manage
+                    </a>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="text-center py-5">
+                <div style="font-size:2.5rem;color:var(--cp-gray-300,#cbd5e1);margin-bottom:12px;"><i class="bi bi-lightbulb"></i></div>
+                <div class="fw-semibold mb-1" style="font-size:.9rem;">No projects saved yet</div>
+                <div class="text-muted small mb-3">Discover projects to build your portfolio.</div>
+                <a href="{{ url_for('projects') }}" class="btn btn-sm btn-warning">
+                  <i class="bi bi-lightbulb-fill"></i>Find Projects
+                </a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Sidebar ─────────────────────────────────────── -->
+      <div class="col-lg-4">
+
+        <!-- Profile summary -->
+        <div class="card-section">
+          <div class="card-section-header" style="border-bottom:0;padding-bottom:8px;">
+            <h5 class="card-section-title"><i class="bi bi-person-fill" style="color:var(--cp-blue-700);"></i>My Profile</h5>
+            <a href="{{ url_for('profile') }}" class="btn btn-sm btn-outline-primary" style="padding:3px 10px;font-size:.75rem;">Edit</a>
+          </div>
+          <div class="card-section-body" style="padding-top:10px;">
+            <div class="text-center mb-3">
+              <div class="avatar-md mx-auto mb-2" style="background:linear-gradient(135deg,var(--cp-blue-600),var(--cp-blue-800));font-size:1.35rem;">
+                {{ user['username'][0]|upper }}
+              </div>
+              <div class="fw-bold" style="font-size:.9375rem;">{{ user['username'] }}</div>
+              <div class="text-muted small">{{ user['email'] }}</div>
+            </div>
+
+            {% if profile and profile['technical_skills'] %}
+            <div class="mb-2">
+              <div class="form-section-title">Skills</div>
+              <div class="d-flex flex-wrap gap-1">
+                {% for skill in profile['technical_skills'].split(',')[:5] %}
+                <span class="skill-tag">{{ skill.strip() }}</span>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+
+            {% if profile and profile['interests'] %}
+            <div class="mt-2" style="font-size:.8rem;color:var(--cp-gray-500);">
+              <span class="fw-semibold text-dark">Interests: </span>
+              {{ profile['interests'][:90] }}{% if profile['interests']|length > 90 %}…{% endif %}
+            </div>
+            {% endif %}
+
+            {% if not (profile and (profile['technical_skills'] or profile['interests'])) %}
+            <p class="text-muted small text-center mb-2">Complete your profile to get better recommendations.</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="card-section">
+          <div class="card-section-header" style="border-bottom:0;padding-bottom:8px;">
+            <h5 class="card-section-title"><i class="bi bi-lightning-fill" style="color:#f59e0b;"></i>Quick Actions</h5>
+          </div>
+          <div style="padding:0 22px 20px;">
+            <a href="{{ url_for('recommend') }}" class="quick-action">
+              <div class="qa-icon" style="background:#fffbeb;color:#d97706;"><i class="bi bi-stars"></i></div>
+              Career Recommendations
+            </a>
+            <a href="{{ url_for('skill_assessment') }}" class="quick-action">
+              <div class="qa-icon" style="background:#ecfeff;color:#0891b2;"><i class="bi bi-bar-chart-fill"></i></div>
+              Skill Assessment
+            </a>
+            <a href="{{ url_for('roadmap') }}" class="quick-action">
+              <div class="qa-icon" style="background:var(--cp-blue-50);color:var(--cp-blue-700);"><i class="bi bi-map-fill"></i></div>
+              Learning Roadmap
+            </a>
+            <a href="{{ url_for('resume') }}" class="quick-action">
+              <div class="qa-icon" style="background:#fef2f2;color:#dc2626;"><i class="bi bi-file-earmark-person-fill"></i></div>
+              Resume Assistant
+            </a>
+            <a href="{{ url_for('interview') }}" class="quick-action">
+              <div class="qa-icon" style="background:#f0fdf4;color:#16a34a;"><i class="bi bi-chat-dots-fill"></i></div>
+              Interview Practice
+            </a>
+          </div>
+        </div>
+
+        <!-- Recent interview sessions -->
+        {% if interview_sessions %}
+        <div class="card-section mb-0">
+          <div class="card-section-header" style="border-bottom:0;padding-bottom:8px;">
+            <h5 class="card-section-title"><i class="bi bi-chat-dots-fill" style="color:#16a34a;"></i>Recent Practice</h5>
+            <a href="{{ url_for('interview') }}" class="btn btn-sm btn-outline-primary" style="padding:3px 10px;font-size:.72rem;">View All</a>
+          </div>
+          <div style="padding:0 22px 20px;">
+            {% for sess in interview_sessions[:3] %}
+            <div class="list-item-row flex-column align-items-start gap-1 p-2 mb-2" style="margin-bottom:6px;">
+              <div class="fw-semibold" style="font-size:.82rem;">{{ sess['career_role'] }}</div>
+              <div class="text-muted" style="font-size:.72rem;">
+                <i class="bi bi-clock me-1"></i>{{ sess['created_at'][:10] if sess['created_at'] else '—' }}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

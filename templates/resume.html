@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+{% block title %}Resume Assistant — CareerPath AI{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <span class="badge bg-danger-subtle text-danger fw-semibold px-3 py-2 mb-2">Resume Builder</span>
+      <h2 class="fw-bold">Resume Assistant</h2>
+      <p class="text-muted">Enter your details below to generate a structured professional resume draft.</p>
+      <p class="small text-muted">
+        <i class="bi bi-shield-check me-1"></i>
+        All content is sourced from your own input. No information is invented or exaggerated.
+      </p>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- Form -->
+      <div class="col-lg-7">
+        <div class="card border-0 shadow-sm rounded-4">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-4"><i class="bi bi-person-fill me-2 text-danger"></i>Your Information</h5>
+
+            <form method="POST" action="{{ url_for('resume') }}" id="resumeForm">
+
+              <!-- Basic Info -->
+              <div class="card bg-light border-0 rounded-3 p-3 mb-4">
+                <h6 class="fw-semibold mb-3 text-muted">Basic Information</h6>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="name" class="form-label fw-semibold small">Full Name *</label>
+                    <input type="text" class="form-control form-control-sm" id="name" name="name"
+                           placeholder="Your full name" required
+                           value="{{ user['username'] if user else '' }}">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="email" class="form-label fw-semibold small">Email</label>
+                    <input type="email" class="form-control form-control-sm" id="email" name="email"
+                           placeholder="your@email.com"
+                           value="{{ user['email'] if user else '' }}">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="phone" class="form-label fw-semibold small">Phone</label>
+                    <input type="text" class="form-control form-control-sm" id="phone" name="phone"
+                           placeholder="+60 12 345 6789">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="location" class="form-label fw-semibold small">Location</label>
+                    <input type="text" class="form-control form-control-sm" id="location" name="location"
+                           placeholder="City, Country">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Summary -->
+              <div class="mb-3">
+                <label for="summary" class="form-label fw-semibold small d-flex align-items-center justify-content-between">
+                  Professional Summary
+                  <span class="badge bg-info-subtle text-info" data-bs-toggle="tooltip" title="{{ tips.summary }}">Tip</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="summary" name="summary" rows="3"
+                          placeholder="Write 2–3 sentences about your skills, education, and career goal...">{{ profile['career_goals'] if profile and profile['career_goals'] else '' }}</textarea>
+              </div>
+
+              <!-- Education -->
+              <div class="mb-3">
+                <label for="education" class="form-label fw-semibold small d-flex align-items-center justify-content-between">
+                  Education
+                  <span class="badge bg-info-subtle text-info" data-bs-toggle="tooltip" title="{{ tips.education }}">Tip</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="education" name="education" rows="2"
+                          placeholder="e.g. Bachelor of Computer Science — XYZ University (2021–2025)">{{ user['education_level']|title + ' student' if user and user['education_level'] else '' }}</textarea>
+              </div>
+
+              <!-- Skills -->
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label for="technical_skills" class="form-label fw-semibold small d-flex align-items-center justify-content-between">
+                    Technical Skills
+                    <span class="badge bg-info-subtle text-info" data-bs-toggle="tooltip" title="{{ tips.technical_skills }}">Tip</span>
+                  </label>
+                  <textarea class="form-control form-control-sm" id="technical_skills" name="technical_skills" rows="3"
+                            placeholder="Languages: Python, JavaScript&#10;Databases: MySQL, SQLite&#10;Tools: Git, Docker">{{ profile['technical_skills'] if profile and profile['technical_skills'] else '' }}</textarea>
+                </div>
+                <div class="col-md-6">
+                  <label for="soft_skills" class="form-label fw-semibold small">Soft Skills</label>
+                  <textarea class="form-control form-control-sm" id="soft_skills" name="soft_skills" rows="3"
+                            placeholder="e.g. Communication, Teamwork, Problem-solving">{{ profile['soft_skills'] if profile and profile['soft_skills'] else '' }}</textarea>
+                </div>
+              </div>
+
+              <!-- Experience -->
+              <div class="mb-3">
+                <label for="experience" class="form-label fw-semibold small d-flex align-items-center justify-content-between">
+                  Experience <small class="text-muted">(optional)</small>
+                  <span class="badge bg-info-subtle text-info" data-bs-toggle="tooltip" title="{{ tips.experience }}">Tip</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="experience" name="experience" rows="3"
+                          placeholder="e.g. Web Developer Intern — ABC Company (Jun–Aug 2024)&#10;Developed REST APIs and improved page load speed by 30%."></textarea>
+              </div>
+
+              <!-- Projects -->
+              <div class="mb-3">
+                <label for="projects" class="form-label fw-semibold small d-flex align-items-center justify-content-between">
+                  Projects
+                  <span class="badge bg-info-subtle text-info" data-bs-toggle="tooltip" title="{{ tips.projects }}">Tip</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="projects" name="projects" rows="3"
+                          placeholder="e.g. Student Management System — Flask, SQLite, Bootstrap&#10;A web app for managing student records and grades."></textarea>
+              </div>
+
+              <!-- Certifications -->
+              <div class="mb-3">
+                <label for="certifications" class="form-label fw-semibold small d-flex align-items-center justify-content-between">
+                  Certifications <small class="text-muted">(optional)</small>
+                  <span class="badge bg-info-subtle text-info" data-bs-toggle="tooltip" title="{{ tips.certifications }}">Tip</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="certifications" name="certifications" rows="2"
+                          placeholder="e.g. Google IT Support Certificate — Coursera (2024)"></textarea>
+              </div>
+
+              <!-- Achievements -->
+              <div class="mb-4">
+                <label for="achievements" class="form-label fw-semibold small d-flex align-items-center justify-content-between">
+                  Achievements <small class="text-muted">(optional)</small>
+                  <span class="badge bg-info-subtle text-info" data-bs-toggle="tooltip" title="{{ tips.achievements }}">Tip</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="achievements" name="achievements" rows="2"
+                          placeholder="e.g. Dean's List (2023), Hackathon Winner"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-danger fw-semibold px-4">
+                <i class="bi bi-file-earmark-person-fill me-2"></i>Generate Resume Draft
+              </button>
+
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview / output -->
+      <div class="col-lg-5">
+
+        {% if resume_content %}
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+          <div class="card-header bg-transparent border-0 d-flex align-items-center justify-content-between p-4 pb-2">
+            <h5 class="fw-bold mb-0"><i class="bi bi-file-earmark-text-fill text-danger me-2"></i>Your Resume Draft</h5>
+            <button class="btn btn-outline-secondary btn-sm" onclick="copyResume()">
+              <i class="bi bi-clipboard me-1"></i>Copy
+            </button>
+          </div>
+          <div class="card-body p-4 pt-2">
+            <div class="bg-light rounded-3 p-4 mb-3" id="resumeOutput" style="font-family:monospace;font-size:0.82rem;white-space:pre-wrap;line-height:1.7;max-height:600px;overflow-y:auto;">{{ resume_content }}</div>
+            <div class="d-grid gap-2">
+              <button class="btn btn-outline-danger btn-sm" onclick="printResume()">
+                <i class="bi bi-printer-fill me-1"></i>Print / Save as PDF
+              </button>
+            </div>
+            <p class="text-muted small mt-2 mb-0">
+              <i class="bi bi-info-circle me-1"></i>
+              Use your browser's print function (Ctrl+P) to save as PDF.
+            </p>
+          </div>
+        </div>
+        {% elif saved_draft %}
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+          <div class="card-header bg-transparent border-0 p-4 pb-2">
+            <h5 class="fw-bold mb-0"><i class="bi bi-clock-history text-muted me-2"></i>Previous Draft</h5>
+            <div class="small text-muted">Saved {{ saved_draft['created_at'][:10] if saved_draft['created_at'] else '' }}</div>
+          </div>
+          <div class="card-body p-4 pt-2">
+            <div class="bg-light rounded-3 p-3" id="resumeOutput" style="font-family:monospace;font-size:0.78rem;white-space:pre-wrap;line-height:1.6;max-height:400px;overflow-y:auto;">{{ saved_draft['content'] }}</div>
+          </div>
+        </div>
+        {% else %}
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+          <div class="card-body p-4 text-center py-5">
+            <i class="bi bi-file-earmark-person display-3 text-muted opacity-50 mb-3"></i>
+            <h6 class="fw-bold">Your resume draft will appear here</h6>
+            <p class="text-muted small">Fill in the form and click <strong>Generate Resume Draft</strong>.</p>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Tips card -->
+        <div class="card border-0 shadow-sm rounded-4">
+          <div class="card-body p-4">
+            <h6 class="fw-bold mb-3"><i class="bi bi-lightbulb-fill text-warning me-2"></i>Resume Writing Tips</h6>
+            <ul class="list-unstyled mb-0">
+              <li class="mb-2 small text-muted d-flex gap-2">
+                <i class="bi bi-check-circle-fill text-success mt-1" style="font-size:0.75rem;"></i>
+                Use action verbs: developed, built, analysed, managed.
+              </li>
+              <li class="mb-2 small text-muted d-flex gap-2">
+                <i class="bi bi-check-circle-fill text-success mt-1" style="font-size:0.75rem;"></i>
+                Quantify achievements where possible (e.g. improved speed by 40%).
+              </li>
+              <li class="mb-2 small text-muted d-flex gap-2">
+                <i class="bi bi-check-circle-fill text-success mt-1" style="font-size:0.75rem;"></i>
+                Keep your resume to one page for entry-level positions.
+              </li>
+              <li class="mb-2 small text-muted d-flex gap-2">
+                <i class="bi bi-check-circle-fill text-success mt-1" style="font-size:0.75rem;"></i>
+                Tailor your summary and skills to each job application.
+              </li>
+              <li class="small text-muted d-flex gap-2">
+                <i class="bi bi-check-circle-fill text-success mt-1" style="font-size:0.75rem;"></i>
+                Include your GitHub or portfolio link in the header.
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Initialise Bootstrap tooltips
+document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+  new bootstrap.Tooltip(el);
+});
+
+function copyResume() {
+  const output = document.getElementById('resumeOutput');
+  if (!output) return;
+  navigator.clipboard.writeText(output.textContent).then(function() {
+    const btn = document.querySelector('button[onclick="copyResume()"]');
+    btn.innerHTML = '<i class="bi bi-check2 me-1"></i>Copied!';
+    setTimeout(() => btn.innerHTML = '<i class="bi bi-clipboard me-1"></i>Copy', 2000);
+  });
+}
+
+function printResume() {
+  const content = document.getElementById('resumeOutput');
+  if (!content) return;
+  const win = window.open('', '_blank');
+  win.document.write('<html><head><title>Resume</title><style>body{font-family:monospace;white-space:pre-wrap;padding:40px;font-size:13px;line-height:1.8;}</style></head><body>');
+  win.document.write(content.textContent);
+  win.document.write('</body></html>');
+  win.document.close();
+  win.print();
+}
+</script>
+{% endblock %}

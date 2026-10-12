@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block title %}Interview Preparation — CareerPath AI{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <span class="badge bg-success-subtle text-success fw-semibold px-3 py-2 mb-2">Interview Practice</span>
+      <h2 class="fw-bold">Interview Preparation</h2>
+      <p class="text-muted">Practise common interview questions, submit your answers, and receive detailed feedback.</p>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- Settings -->
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 sticky-top" style="top:80px;">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-4"><i class="bi bi-sliders text-success me-2"></i>Practice Settings</h5>
+
+            <form method="POST" action="{{ url_for('interview') }}" id="settingsForm">
+              <input type="hidden" name="action" value="get_questions">
+
+              <div class="mb-3">
+                <label for="career_role" class="form-label fw-semibold small">Career Role</label>
+                <select class="form-select form-select-sm" id="career_role" name="career_role" required>
+                  <option value="">Select a role</option>
+                  {% for role in career_roles %}
+                  <option value="{{ role }}" {% if role == selected_role %}selected{% endif %}>{{ role }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="topic" class="form-label fw-semibold small">Interview Topic</label>
+                <select class="form-select form-select-sm" id="topic" name="topic" required>
+                  <option value="">Select a topic</option>
+                  {% for t in topics %}
+                  <option value="{{ t }}" {% if t == selected_topic %}selected{% endif %}>
+                    {{ t|replace('_',' ')|title }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="mb-4">
+                <label for="difficulty" class="form-label fw-semibold small">Difficulty Level</label>
+                <select class="form-select form-select-sm" id="difficulty" name="difficulty">
+                  <option value="beginner" {% if selected_difficulty == 'beginner' %}selected{% endif %}>Beginner</option>
+                  <option value="intermediate" {% if selected_difficulty == 'intermediate' %}selected{% endif %}>Intermediate</option>
+                  <option value="advanced" {% if selected_difficulty == 'advanced' %}selected{% endif %}>Advanced</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-success w-100 fw-semibold">
+                <i class="bi bi-chat-quote me-2"></i>Load Questions
+              </button>
+            </form>
+
+            {% if questions %}
+            <hr>
+            <div class="small text-muted">
+              <i class="bi bi-info-circle me-1"></i>
+              <strong>{{ questions|length }}</strong> questions loaded for
+              <strong>{{ selected_topic|replace('_',' ')|title }}</strong> —
+              <strong>{{ selected_difficulty|title }}</strong>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Questions -->
+      <div class="col-lg-8">
+        {% if questions %}
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <h5 class="fw-bold mb-0">
+            <i class="bi bi-chat-dots-fill text-success me-2"></i>
+            Practice Questions
+          </h5>
+          <span class="badge bg-success-subtle text-success">
+            {{ selected_topic|replace('_',' ')|title }} · {{ selected_difficulty|title }}
+          </span>
+        </div>
+
+        {% for question in questions %}
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+          <div class="card-body p-4">
+            <div class="d-flex gap-3 mb-3">
+              <div class="badge bg-success text-white d-flex align-items-center justify-content-center rounded-circle fw-bold"
+                   style="width:36px;height:36px;min-width:36px;font-size:0.9rem;">
+                {{ loop.index }}
+              </div>
+              <div>
+                <div class="fw-semibold">{{ question }}</div>
+                <div class="small text-muted mt-1">
+                  <span class="me-2">{{ selected_role }}</span>·
+                  <span class="ms-2">{{ selected_topic|replace('_',' ')|title }}</span>
+                </div>
+              </div>
+            </div>
+
+            <form method="POST" action="{{ url_for('interview_feedback') }}">
+              <input type="hidden" name="question" value="{{ question }}">
+              <input type="hidden" name="career_role" value="{{ selected_role }}">
+              <input type="hidden" name="topic" value="{{ selected_topic }}">
+              <input type="hidden" name="difficulty" value="{{ selected_difficulty }}">
+              <div class="mb-3">
+                <label for="answer_{{ loop.index }}" class="form-label fw-semibold small">Your Answer</label>
+                <textarea class="form-control" id="answer_{{ loop.index }}" name="answer" rows="5"
+                          placeholder="Write your answer here. Be as detailed as possible — explain concepts, give examples, and demonstrate your understanding..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-success btn-sm fw-semibold">
+                <i class="bi bi-send me-1"></i>Submit for Feedback
+              </button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+
+        {% else %}
+        <!-- Empty state -->
+        <div class="card border-0 shadow-sm rounded-4 text-center py-5">
+          <div class="card-body">
+            <i class="bi bi-chat-dots display-3 text-muted opacity-50 mb-3"></i>
+            <h5 class="fw-bold mb-2">Ready to Practise?</h5>
+            <p class="text-muted mb-4">
+              Select your target role, a topic, and a difficulty level on the left, then click
+              <strong>Load Questions</strong> to begin.
+            </p>
+            <div class="d-flex justify-content-center flex-wrap gap-2">
+              {% for t in topics[:4] %}
+              <button class="btn btn-outline-success btn-sm" onclick="quickLoad('{{ t }}')">
+                {{ t|replace('_',' ')|title }}
+              </button>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function quickLoad(topic) {
+  document.getElementById('topic').value = topic;
+  // Ensure a career_role is selected before submitting
+  var roleEl = document.getElementById('career_role');
+  if (!roleEl.value) {
+    roleEl.value = roleEl.options[1] ? roleEl.options[1].value : '';
+  }
+  document.getElementById('settingsForm').submit();
+}
+</script>
+{% endblock %}

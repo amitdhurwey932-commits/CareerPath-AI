@@ -1,0 +1,170 @@
+[
+  {
+    "key": "software_developer",
+    "title": "Software Developer",
+    "category": "technology",
+    "description": "Software developers design, build, and maintain applications and systems software. They work across web, mobile, desktop, and enterprise domains.",
+    "responsibilities": [
+      "Write and review clean, efficient code",
+      "Design software architecture and data models",
+      "Debug and resolve technical issues",
+      "Collaborate with product and design teams",
+      "Participate in code reviews and testing",
+      "Maintain and improve existing systems"
+    ],
+    "required_skills": ["Python", "JavaScript", "Git", "Data Structures", "Algorithms", "SQL", "OOP", "REST APIs"],
+    "soft_skills": ["Problem-solving", "Communication", "Teamwork", "Attention to detail"],
+    "learning_topics": ["Python", "JavaScript", "Data Structures & Algorithms", "Git & GitHub", "Databases", "REST APIs", "Testing"],
+    "example_projects": ["Task Manager App", "Student Management System", "REST API Service", "Portfolio Website"],
+    "entry_routes": ["Computer Science degree", "Bootcamp", "Self-taught with portfolio", "Internship"],
+    "career_progression": ["Junior Developer → Developer → Senior Developer → Tech Lead → Engineering Manager"],
+    "keywords": ["programming", "coding", "development", "software", "application", "python", "javascript", "java"]
+  },
+  {
+    "key": "data_analyst",
+    "title": "Data Analyst",
+    "category": "data",
+    "description": "Data analysts collect, process, and interpret data to help organisations make informed decisions. They use statistical tools and visualisation techniques.",
+    "responsibilities": [
+      "Collect and clean data from various sources",
+      "Perform statistical analysis and identify trends",
+      "Create dashboards and visualisations",
+      "Write SQL queries and reports",
+      "Present insights to stakeholders",
+      "Collaborate with business teams"
+    ],
+    "required_skills": ["Python", "SQL", "Excel", "Data Visualisation", "Statistics", "Pandas", "Power BI or Tableau"],
+    "soft_skills": ["Analytical thinking", "Communication", "Attention to detail", "Curiosity"],
+    "learning_topics": ["Python for Data", "SQL", "Statistics", "Pandas & NumPy", "Tableau or Power BI", "Data Cleaning"],
+    "example_projects": ["Sales Dashboard", "Student Performance Analysis", "COVID-19 Data Tracker", "Expense Analyser"],
+    "entry_routes": ["Statistics or Mathematics degree", "Data Science bootcamp", "Self-taught with portfolio"],
+    "career_progression": ["Junior Analyst → Data Analyst → Senior Analyst → Data Lead → Analytics Manager"],
+    "keywords": ["data", "analytics", "statistics", "sql", "excel", "visualisation", "reporting", "business intelligence"]
+  },
+  {
+    "key": "ai_ml_engineer",
+    "title": "AI/ML Engineer",
+    "category": "data",
+    "description": "AI/ML engineers build machine learning models and AI systems that can learn from data, automate tasks, and make predictions.",
+    "responsibilities": [
+      "Design and train machine learning models",
+      "Process and engineer features from raw data",
+      "Deploy and monitor ML models in production",
+      "Research and apply state-of-the-art algorithms",
+      "Collaborate with data and software teams",
+      "Evaluate model performance and improve accuracy"
+    ],
+    "required_skills": ["Python", "Machine Learning", "Deep Learning", "TensorFlow or PyTorch", "Mathematics", "Statistics", "SQL", "Cloud Platforms"],
+    "soft_skills": ["Research skills", "Problem-solving", "Critical thinking", "Communication"],
+    "learning_topics": ["Python", "Linear Algebra & Statistics", "ML Fundamentals", "Deep Learning", "Scikit-learn", "TensorFlow or PyTorch", "MLOps"],
+    "example_projects": ["Image Classifier", "Sentiment Analysis Tool", "Recommendation System", "Career Guidance AI"],
+    "entry_routes": ["Computer Science or Mathematics degree", "AI/ML specialisation courses", "Research publications"],
+    "career_progression": ["ML Engineer → Senior ML Engineer → ML Architect → AI Research Lead"],
+    "keywords": ["ai", "machine learning", "deep learning", "neural network", "tensorflow", "pytorch", "nlp", "computer vision"]
+  },
+  {
+    "key": "web_developer",
+    "title": "Web Developer",
+    "category": "technology",
+    "description": "Web developers create and maintain websites and web applications. They work on frontend interfaces, backend logic, or both.",
+    "responsibilities": [
+      "Build responsive, accessible web interfaces",
+      "Develop server-side application logic",
+      "Integrate APIs and third-party services",
+      "Optimise web performance and SEO",
+      "Ensure cross-browser compatibility",
+      "Implement security best practices"
+    ],
+    "required_skills": ["HTML", "CSS", "JavaScript", "React or Vue", "Node.js or Python", "SQL", "Git", "REST APIs"],
+    "soft_skills": ["Creativity", "Attention to detail", "Time management", "Client communication"],
+    "learning_topics": ["HTML & CSS", "JavaScript", "React or Vue", "Backend Framework", "Databases", "Git", "Deployment"],
+    "example_projects": ["Portfolio Website", "Blog Platform", "E-commerce Store", "Task Manager Web App"],
+    "entry_routes": ["Web development bootcamp", "Computer Science degree", "Self-taught with portfolio"],
+    "career_progression": ["Junior Developer → Web Developer → Senior Developer → Full-Stack Lead → CTO"],
+    "keywords": ["web", "html", "css", "javascript", "react", "frontend", "backend", "fullstack", "node"]
+  },
+  {
+    "key": "cybersecurity_analyst",
+    "title": "Cybersecurity Analyst",
+    "category": "security",
+    "description": "Cybersecurity analysts protect computer systems and networks from digital threats, breaches, and attacks.",
+    "responsibilities": [
+      "Monitor systems for security threats",
+      "Conduct vulnerability assessments and penetration testing",
+      "Respond to security incidents",
+      "Implement security policies and controls",
+      "Educate staff on security best practices",
+      "Analyse security logs and reports"
+    ],
+    "required_skills": ["Networking", "Linux", "Security Tools", "Python", "Cryptography", "Risk Assessment", "Incident Response"],
+    "soft_skills": ["Analytical thinking", "Attention to detail", "Problem-solving", "Communication"],
+    "learning_topics": ["Networking Fundamentals", "Linux", "Python for Security", "Ethical Hacking", "SIEM Tools", "Compliance Frameworks"],
+    "example_projects": ["Network Scanner", "Password Manager", "Vulnerability Scanner", "Security Dashboard"],
+    "entry_routes": ["Cybersecurity degree", "CompTIA Security+ certification", "Ethical hacking courses"],
+    "career_progression": ["Security Analyst → Senior Analyst → Security Engineer → CISO"],
+    "keywords": ["security", "cybersecurity", "hacking", "network", "linux", "pentest", "ethical hacking", "firewall"]
+  },
+  {
+    "key": "cloud_engineer",
+    "title": "Cloud Engineer",
+    "category": "technology",
+    "description": "Cloud engineers design, build, and manage cloud infrastructure. They ensure scalability, reliability, and cost efficiency of cloud systems.",
+    "responsibilities": [
+      "Design and deploy cloud architecture",
+      "Manage cloud services and resources",
+      "Implement DevOps and CI/CD pipelines",
+      "Monitor cloud performance and costs",
+      "Automate infrastructure provisioning",
+      "Ensure security and compliance in the cloud"
+    ],
+    "required_skills": ["AWS or Azure or GCP", "Linux", "Docker", "Kubernetes", "Terraform", "Python or Bash", "Networking"],
+    "soft_skills": ["Problem-solving", "Cost awareness", "Communication", "Adaptability"],
+    "learning_topics": ["Cloud Fundamentals", "Linux", "Docker & Containers", "Kubernetes", "CI/CD", "Infrastructure as Code", "Cloud Security"],
+    "example_projects": ["Deploy a Web App on AWS", "Container Orchestration with Kubernetes", "Serverless API", "Automated Backup System"],
+    "entry_routes": ["IT or Computer Science degree", "AWS/Azure/GCP certifications", "DevOps experience"],
+    "career_progression": ["Junior Cloud Engineer → Cloud Engineer → Senior Cloud Architect → Cloud Director"],
+    "keywords": ["cloud", "aws", "azure", "gcp", "devops", "docker", "kubernetes", "terraform", "infrastructure"]
+  },
+  {
+    "key": "ui_ux_designer",
+    "title": "UI/UX Designer",
+    "category": "design",
+    "description": "UI/UX designers create user-friendly, visually appealing digital interfaces. They research user needs and translate them into intuitive designs.",
+    "responsibilities": [
+      "Conduct user research and usability testing",
+      "Create wireframes, prototypes, and mockups",
+      "Design intuitive user interfaces",
+      "Work with developers to implement designs",
+      "Establish design systems and style guides",
+      "Analyse user behaviour and improve experiences"
+    ],
+    "required_skills": ["Figma or Adobe XD", "UI Design Principles", "User Research", "Prototyping", "CSS", "Design Systems"],
+    "soft_skills": ["Creativity", "Empathy", "Communication", "Attention to detail"],
+    "learning_topics": ["Design Principles", "Figma", "User Research Methods", "Wireframing", "Prototyping", "CSS & HTML Basics"],
+    "example_projects": ["Mobile App Redesign", "Portfolio Website", "Design System", "User Research Case Study"],
+    "entry_routes": ["Design degree", "UI/UX bootcamp", "Self-taught with portfolio", "Graphic design background"],
+    "career_progression": ["Junior Designer → UI/UX Designer → Senior Designer → Design Lead → Head of Design"],
+    "keywords": ["design", "ui", "ux", "figma", "wireframe", "prototype", "user experience", "interface"]
+  },
+  {
+    "key": "digital_marketing",
+    "title": "Digital Marketing Specialist",
+    "category": "marketing",
+    "description": "Digital marketing specialists promote brands, products, and services through online channels including social media, search, and email.",
+    "responsibilities": [
+      "Plan and execute digital marketing campaigns",
+      "Manage social media presence and content",
+      "Optimise websites for search engines (SEO)",
+      "Run paid advertising campaigns (PPC)",
+      "Analyse campaign performance and ROI",
+      "Write compelling marketing copy"
+    ],
+    "required_skills": ["SEO", "Google Analytics", "Social Media Marketing", "Content Writing", "Email Marketing", "PPC Advertising"],
+    "soft_skills": ["Creativity", "Communication", "Analytical thinking", "Adaptability"],
+    "learning_topics": ["Digital Marketing Fundamentals", "SEO", "Google Analytics", "Social Media Strategy", "Content Marketing", "Email Campaigns"],
+    "example_projects": ["SEO Audit Report", "Social Media Campaign", "Email Newsletter", "Google Ads Campaign"],
+    "entry_routes": ["Marketing degree", "Digital marketing courses", "Freelance projects", "Internships"],
+    "career_progression": ["Marketing Assistant → Digital Marketing Executive → Manager → Director of Marketing"],
+    "keywords": ["marketing", "digital marketing", "seo", "social media", "content", "advertising", "email"]
+  }
+]

@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% block title %}Project Ideas — CareerPath AI{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <span class="badge bg-warning-subtle text-warning fw-semibold px-3 py-2 mb-2">Portfolio Building</span>
+      <h2 class="fw-bold">Project Ideas</h2>
+      <p class="text-muted">Discover practical projects to build your portfolio and develop real-world skills.</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4">
+        <form method="GET" action="{{ url_for('projects') }}" class="row g-3 align-items-end">
+          <div class="col-md-4">
+            <label for="career" class="form-label fw-semibold small">Filter by Career</label>
+            <select class="form-select" id="career" name="career">
+              <option value="">All Careers</option>
+              {% for c in careers %}
+              <option value="{{ c.key }}" {% if c.key == career_filter %}selected{% endif %}>{{ c.title }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label for="difficulty" class="form-label fw-semibold small">Difficulty</label>
+            <select class="form-select" id="difficulty" name="difficulty">
+              <option value="">All Levels</option>
+              <option value="beginner" {% if difficulty_filter == 'beginner' %}selected{% endif %}>Beginner</option>
+              <option value="intermediate" {% if difficulty_filter == 'intermediate' %}selected{% endif %}>Intermediate</option>
+              <option value="advanced" {% if difficulty_filter == 'advanced' %}selected{% endif %}>Advanced</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-warning w-100 text-dark fw-semibold">
+              <i class="bi bi-funnel me-1"></i>Filter
+            </button>
+          </div>
+          <div class="col-md-3">
+            {% if career_filter or difficulty_filter %}
+            <a href="{{ url_for('projects') }}" class="btn btn-outline-secondary w-100">
+              <i class="bi bi-x-circle me-1"></i>Clear Filters
+            </a>
+            {% endif %}
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Results count -->
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <span class="text-muted small">
+        Showing <strong>{{ projects|length }}</strong> project{% if projects|length != 1 %}s{% endif %}
+      </span>
+    </div>
+
+    <!-- Project cards -->
+    {% if projects %}
+    <div class="row g-4">
+      {% for proj in projects %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-0 shadow-sm rounded-4 card-hover">
+          <div class="card-body p-4 d-flex flex-column">
+
+            <div class="d-flex align-items-start justify-content-between mb-3">
+              <div class="fs-2 text-warning"><i class="bi bi-lightbulb-fill"></i></div>
+              <span class="badge {% if proj.difficulty == 'beginner' %}bg-success{% elif proj.difficulty == 'intermediate' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                {{ proj.difficulty|title }}
+              </span>
+            </div>
+
+            <h5 class="fw-bold mb-2">{{ proj.title }}</h5>
+            <p class="text-muted small flex-grow-1 mb-3">{{ proj.description }}</p>
+
+            <!-- Technologies -->
+            <div class="mb-3">
+              <div class="small fw-semibold text-muted mb-1">Technologies</div>
+              <div>
+                {% for tech in proj.technologies %}
+                <span class="badge bg-light text-dark border me-1 mb-1" style="font-size:0.7rem;">{{ tech }}</span>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Learning outcomes -->
+            <div class="mb-3">
+              <div class="small fw-semibold text-muted mb-1">Learning Outcomes</div>
+              <ul class="list-unstyled mb-0">
+                {% for outcome in proj.learning_outcomes[:3] %}
+                <li class="small text-muted d-flex align-items-start gap-1">
+                  <i class="bi bi-arrow-right text-success mt-1" style="font-size:0.7rem;"></i>
+                  {{ outcome }}
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+
+            <!-- Actions -->
+            {% if current_user %}
+            {% set saved_status = saved_map.get(proj.key, '') %}
+            <div class="border-top pt-3 mt-auto">
+              {% if saved_status %}
+              <div class="d-flex gap-2 align-items-center justify-content-between">
+                <span class="badge {% if saved_status == 'completed' %}bg-success{% elif saved_status == 'in_progress' %}bg-info text-dark{% else %}bg-secondary{% endif %} px-2 py-1">
+                  <i class="bi bi-{% if saved_status == 'completed' %}check-circle{% elif saved_status == 'in_progress' %}play-circle{% else %}bookmark{% endif %}-fill me-1"></i>
+                  {{ saved_status|replace('_', ' ')|title }}
+                </span>
+                <div class="d-flex gap-1">
+                  <form method="POST" action="{{ url_for('projects', career=career_filter, difficulty=difficulty_filter) }}" class="d-inline">
+                    <input type="hidden" name="action" value="save">
+                    <input type="hidden" name="project_key" value="{{ proj.key }}">
+                    <select name="status" class="form-select form-select-sm d-inline-block" style="width:auto;font-size:0.75rem;" onchange="this.form.submit()">
+                      <option value="planned" {% if saved_status=='planned' %}selected{% endif %}>Planned</option>
+                      <option value="in_progress" {% if saved_status=='in_progress' %}selected{% endif %}>In Progress</option>
+                      <option value="completed" {% if saved_status=='completed' %}selected{% endif %}>Completed</option>
+                    </select>
+                  </form>
+                  <form method="POST" action="{{ url_for('projects', career=career_filter, difficulty=difficulty_filter) }}" class="d-inline">
+                    <input type="hidden" name="action" value="remove">
+                    <input type="hidden" name="project_key" value="{{ proj.key }}">
+                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Remove from saved">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </form>
+                </div>
+              </div>
+              {% else %}
+              <form method="POST" action="{{ url_for('projects', career=career_filter, difficulty=difficulty_filter) }}">
+                <input type="hidden" name="action" value="save">
+                <input type="hidden" name="project_key" value="{{ proj.key }}">
+                <input type="hidden" name="status" value="planned">
+                <button type="submit" class="btn btn-outline-warning btn-sm w-100">
+                  <i class="bi bi-bookmark-plus me-1"></i>Save to Dashboard
+                </button>
+              </form>
+              {% endif %}
+            </div>
+            {% else %}
+            <div class="border-top pt-3 mt-auto">
+              <a href="{{ url_for('register') }}" class="btn btn-outline-warning btn-sm w-100">
+                <i class="bi bi-person-plus me-1"></i>Register to Save Projects
+              </a>
+            </div>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="card border-0 shadow-sm rounded-4 text-center py-5">
+      <div class="card-body">
+        <i class="bi bi-lightbulb display-3 text-muted opacity-50 mb-3"></i>
+        <h5 class="fw-bold">No projects found</h5>
+        <p class="text-muted">Try adjusting your filters.</p>
+        <a href="{{ url_for('projects') }}" class="btn btn-warning btn-sm">Clear Filters</a>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,102 @@
+[
+  {
+    "key": "student_management_system",
+    "title": "Student Management System",
+    "description": "Build a web application to manage student records, grades, and attendance. This practical project covers CRUD operations, authentication, and database design.",
+    "difficulty": "beginner",
+    "careers": ["software_developer", "web_developer"],
+    "technologies": ["Python", "Flask", "SQLite", "HTML", "CSS"],
+    "learning_outcomes": ["Database design", "CRUD operations", "User authentication", "Form handling"],
+    "suggested_features": ["Student registration", "Grade tracking", "Attendance records", "Report generation", "Admin dashboard"]
+  },
+  {
+    "key": "expense_tracker",
+    "title": "Expense Tracker",
+    "description": "Create a personal finance tracker that records income and expenses, categorises transactions, and visualises spending patterns.",
+    "difficulty": "beginner",
+    "careers": ["software_developer", "web_developer", "data_analyst"],
+    "technologies": ["Python", "Flask or Django", "SQLite", "Chart.js", "Bootstrap"],
+    "learning_outcomes": ["Data storage", "Data visualisation", "User interface design", "REST API basics"],
+    "suggested_features": ["Add/edit/delete transactions", "Category management", "Monthly summaries", "Charts and graphs", "Export to CSV"]
+  },
+  {
+    "key": "weather_app",
+    "title": "Weather Application",
+    "description": "Build a weather application that fetches real-time weather data from a public API and displays forecasts with a clean, responsive interface.",
+    "difficulty": "beginner",
+    "careers": ["web_developer", "software_developer"],
+    "technologies": ["JavaScript", "HTML", "CSS", "REST API", "OpenWeatherMap API"],
+    "learning_outcomes": ["API integration", "Asynchronous JavaScript", "UI design", "JSON data handling"],
+    "suggested_features": ["Current weather display", "5-day forecast", "Search by city", "Weather icons", "Location detection"]
+  },
+  {
+    "key": "portfolio_website",
+    "title": "Portfolio Website",
+    "description": "Design and build a personal portfolio website to showcase your projects, skills, and experience to potential employers.",
+    "difficulty": "beginner",
+    "careers": ["web_developer", "ui_ux_designer", "digital_marketing"],
+    "technologies": ["HTML", "CSS", "JavaScript", "Bootstrap or Tailwind"],
+    "learning_outcomes": ["Responsive design", "CSS animations", "Personal branding", "Web accessibility"],
+    "suggested_features": ["About section", "Projects showcase", "Skills display", "Contact form", "Downloadable resume", "Dark/light mode"]
+  },
+  {
+    "key": "ai_study_assistant",
+    "title": "AI Student Study Assistant",
+    "description": "Build an AI-powered study assistant that helps students understand topics, quiz themselves, and summarise notes using NLP techniques.",
+    "difficulty": "intermediate",
+    "careers": ["ai_ml_engineer", "software_developer"],
+    "technologies": ["Python", "Flask", "OpenAI API or HuggingFace", "JavaScript", "SQLite"],
+    "learning_outcomes": ["AI API integration", "NLP basics", "Backend development", "User session management"],
+    "suggested_features": ["Topic explanation chatbot", "Quiz generation", "Note summarisation", "Flashcard creator", "Progress tracking"]
+  },
+  {
+    "key": "career_recommendation_system",
+    "title": "Career Recommendation System",
+    "description": "Build a rule-based or ML-powered system that recommends career paths based on a user's skills, interests, and education.",
+    "difficulty": "intermediate",
+    "careers": ["ai_ml_engineer", "data_analyst", "software_developer"],
+    "technologies": ["Python", "Flask", "Scikit-learn or rule-based logic", "SQLite", "Bootstrap"],
+    "learning_outcomes": ["Rule-based systems", "ML classification basics", "Web application development", "Data modelling"],
+    "suggested_features": ["Profile input form", "Career recommendations", "Skill gap analysis", "Match scoring", "Explanation of results"]
+  },
+  {
+    "key": "sales_dashboard",
+    "title": "Sales Analytics Dashboard",
+    "description": "Create an interactive dashboard that visualises sales data, trends, and key metrics using charts and filterable tables.",
+    "difficulty": "intermediate",
+    "careers": ["data_analyst", "web_developer"],
+    "technologies": ["Python", "Pandas", "Flask or Streamlit", "Chart.js or Plotly", "SQLite"],
+    "learning_outcomes": ["Data aggregation", "Data visualisation", "Dashboard design", "SQL queries"],
+    "suggested_features": ["Monthly sales charts", "Top products table", "Revenue by region", "Filter by date range", "CSV export"]
+  },
+  {
+    "key": "network_scanner",
+    "title": "Network Security Scanner",
+    "description": "Build a basic network scanning tool that discovers devices on a local network and checks for open ports and common vulnerabilities.",
+    "difficulty": "intermediate",
+    "careers": ["cybersecurity_analyst"],
+    "technologies": ["Python", "Scapy or Nmap", "Flask", "SQLite"],
+    "learning_outcomes": ["Networking fundamentals", "Socket programming", "Security scanning", "Report generation"],
+    "suggested_features": ["IP range scanning", "Port detection", "OS fingerprinting", "Vulnerability report", "Export results"]
+  },
+  {
+    "key": "serverless_api",
+    "title": "Serverless REST API",
+    "description": "Deploy a fully serverless REST API using a cloud provider. Learn infrastructure-as-code and cloud-native development patterns.",
+    "difficulty": "advanced",
+    "careers": ["cloud_engineer", "software_developer"],
+    "technologies": ["Python", "AWS Lambda or Azure Functions", "API Gateway", "DynamoDB or SQLite", "Terraform"],
+    "learning_outcomes": ["Serverless architecture", "Cloud deployment", "Infrastructure as code", "API design"],
+    "suggested_features": ["CRUD endpoints", "Authentication middleware", "Automated deployment", "Logging and monitoring", "Cost estimation"]
+  },
+  {
+    "key": "image_classifier",
+    "title": "Image Classifier Web App",
+    "description": "Build an image classification application using a pre-trained CNN model that identifies objects or categories in uploaded images.",
+    "difficulty": "intermediate",
+    "careers": ["ai_ml_engineer"],
+    "technologies": ["Python", "TensorFlow or PyTorch", "Flask", "HTML/CSS", "Pillow"],
+    "learning_outcomes": ["Transfer learning", "Deep learning basics", "Model deployment", "File handling in Flask"],
+    "suggested_features": ["Image upload", "Classification results", "Confidence scores", "Multiple model options", "Prediction history"]
+  }
+]

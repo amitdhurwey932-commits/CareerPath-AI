@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+{% block title %}Learning Roadmap — CareerPath AI{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="container position-relative" style="z-index:2;">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div>
+        <div class="section-label section-label-blue mb-2">Structured Learning</div>
+        <h2 class="fw-bold mb-1">Learning Roadmap</h2>
+        <p class="mb-0" style="color:rgba(255,255,255,.65);font-size:.9rem;">
+          Follow a step-by-step path for your chosen career. Track and save your progress.
+        </p>
+      </div>
+      {% if selected_career and roadmap_data %}
+      <div class="d-flex align-items-center gap-3">
+        <div class="text-center">
+          <div class="fw-bold text-white" style="font-size:1.5rem;letter-spacing:-.02em;" id="hdrPct">{{ completion_pct }}%</div>
+          <div style="color:rgba(255,255,255,.6);font-size:.72rem;">Complete</div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<section class="py-4">
+  <div class="container">
+
+    <!-- Career selector -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body p-4">
+        <form method="GET" action="{{ url_for('roadmap') }}" id="careerSelectForm" class="row g-3 align-items-end">
+          <div class="col-md-8">
+            <label for="career" class="form-label">Select a Career Roadmap</label>
+            <select class="form-select" id="career" name="career" onchange="this.form.submit()">
+              <option value="">— Choose a career —</option>
+              {% for c in careers %}
+              <option value="{{ c.key }}" {% if selected_career and c.key == selected_career.key %}selected{% endif %}>
+                {{ c.title }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4">
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="bi bi-map"></i>Load Roadmap
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {% if selected_career and roadmap_data %}
+
+    <!-- Progress overview -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body p-4">
+        <div class="row align-items-center g-3">
+          <div class="col-md-7">
+            <h5 class="fw-bold mb-1">{{ selected_career.title }}</h5>
+            <p class="text-muted small mb-3">
+              <i class="bi bi-info-circle me-1"></i>Estimated durations are suggestions only and vary by pace and experience.
+            </p>
+            <div class="d-flex align-items-center gap-3">
+              <div class="progress flex-grow-1" style="height:20px;">
+                <div class="progress-bar fw-bold" id="mainProgressBar"
+                     style="background:var(--cp-blue-700);width:{{ completion_pct }}%;border-radius:100px!important;">
+                  <span id="pctText">{{ completion_pct }}%</span>
+                </div>
+              </div>
+              <span class="fw-bold" style="font-size:1.15rem;color:var(--cp-blue-700);" id="pctLabel">{{ completion_pct }}%</span>
+            </div>
+            <div class="mt-2 small text-muted">
+              <span class="fw-semibold" style="color:#16a34a;" id="completedCount">{{ progress_data.values()|select()|list|length }}</span>
+              of {{ roadmap_data|length }} steps completed
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="row g-2 text-center">
+              <div class="col-4">
+                <div class="p-3 rounded-3" style="background:#f0fdf4;">
+                  <div class="fw-bold" style="font-size:1.5rem;color:#16a34a;" id="doneCount">{{ progress_data.values()|select()|list|length }}</div>
+                  <div class="text-muted" style="font-size:.72rem;">Done</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="p-3 rounded-3" style="background:#fffbeb;">
+                  <div class="fw-bold" style="font-size:1.5rem;color:#d97706;" id="remCount">{{ roadmap_data|length - progress_data.values()|select()|list|length }}</div>
+                  <div class="text-muted" style="font-size:.72rem;">Remaining</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="p-3 rounded-3" style="background:var(--cp-blue-50);">
+                  <div class="fw-bold" style="font-size:1.5rem;color:var(--cp-blue-700);">{{ roadmap_data|length }}</div>
+                  <div class="text-muted" style="font-size:.72rem;">Total</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roadmap steps -->
+    <form method="POST" action="{{ url_for('roadmap', career=selected_career.key) }}" id="roadmapForm">
+      <input type="hidden" name="career" value="{{ selected_career.key }}">
+
+      <div class="roadmap-timeline" style="padding-left:24px;">
+        {% for step in roadmap_data %}
+        {% set is_done = progress_data.get(step.step, false) %}
+        <div class="roadmap-step-card {% if is_done %}is-done{% endif %}" id="step-{{ step.step }}">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-start gap-4">
+
+              <!-- Step indicator -->
+              <div class="d-flex flex-column align-items-center flex-shrink-0">
+                <div class="step-circle {% if is_done %}done{% endif %}" id="circle-{{ step.step }}">
+                  {% if is_done %}<i class="bi bi-check-lg"></i>{% else %}{{ step.step }}{% endif %}
+                </div>
+                <input class="mt-2" type="checkbox" name="completed_steps" value="{{ step.step }}"
+                       id="check-{{ step.step }}" {% if is_done %}checked{% endif %}
+                       onchange="updateProgress({{ roadmap_data|length }})"
+                       style="width:16px;height:16px;cursor:pointer;accent-color:var(--cp-blue-700);"
+                       aria-label="Mark {{ step.topic }} as complete">
+              </div>
+
+              <!-- Content -->
+              <div class="flex-grow-1 min-w-0">
+                <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+                  <label for="check-{{ step.step }}" class="fw-bold mb-1" style="cursor:pointer;font-size:.9375rem;">
+                    {{ step.topic }}
+                  </label>
+                  <span class="badge badge-pill flex-shrink-0
+                    {% if is_done %}bg-success-subtle text-success{% else %}bg-primary-subtle text-primary{% endif %}"
+                    id="badge-{{ step.step }}" style="font-size:.68rem;">
+                    {% if is_done %}Completed{% else %}Step {{ step.step }}{% endif %}
+                  </span>
+                </div>
+                <p class="text-muted small mb-2">{{ step.explanation }}</p>
+                <div class="d-flex flex-wrap gap-3">
+                  <span class="small text-muted">
+                    <i class="bi bi-book-fill me-1" style="color:#0891b2;"></i>{{ step.resource_type }}
+                  </span>
+                  <span class="small text-muted">
+                    <i class="bi bi-clock-fill me-1" style="color:#d97706;"></i>{{ step.duration }} <em>(estimated)</em>
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="d-flex flex-wrap gap-3 mt-4">
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-save"></i>Save Progress
+        </button>
+        <a href="{{ url_for('skill_assessment', career=selected_career.key) }}" class="btn btn-outline-primary">
+          <i class="bi bi-bar-chart-fill"></i>Skill Assessment
+        </a>
+        <a href="{{ url_for('projects', career=selected_career.key) }}" class="btn btn-outline-primary">
+          <i class="bi bi-lightbulb-fill"></i>Related Projects
+        </a>
+      </div>
+    </form>
+
+    {% elif selected_career %}
+    <div class="card shadow-sm text-center py-5">
+      <div class="card-body">
+        <div style="font-size:3rem;color:var(--cp-gray-300,#cbd5e1);margin-bottom:16px;"><i class="bi bi-map"></i></div>
+        <h5 class="fw-bold">No roadmap available for {{ selected_career.title }}</h5>
+        <p class="text-muted small">Try selecting a different career.</p>
+      </div>
+    </div>
+
+    {% else %}
+    <div class="card shadow-sm text-center py-5">
+      <div class="card-body">
+        <div style="font-size:3rem;color:var(--cp-gray-300,#cbd5e1);margin-bottom:16px;"><i class="bi bi-map"></i></div>
+        <h5 class="fw-bold mb-2">Choose Your Learning Path</h5>
+        <p class="text-muted small mb-4">Select a career above to view and track your personalised learning roadmap.</p>
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+          {% for c in careers[:5] %}
+          <a href="{{ url_for('roadmap', career=c.key) }}" class="btn btn-outline-primary btn-sm">{{ c.title }}</a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function updateProgress(total) {
+  if (!total) return;
+  const checkboxes = document.querySelectorAll('input[name="completed_steps"]');
+  let done = 0;
+  checkboxes.forEach(cb => {
+    const card = document.getElementById('step-' + cb.value);
+    const circle = document.getElementById('circle-' + cb.value);
+    const badge  = document.getElementById('badge-' + cb.value);
+    if (cb.checked) {
+      done++;
+      if (card)   card.classList.add('is-done');
+      if (circle) { circle.classList.add('done'); circle.innerHTML = '<i class="bi bi-check-lg"></i>'; }
+      if (badge)  { badge.className = badge.className.replace(/bg-\S+ text-\S+/g,'') + ' bg-success-subtle text-success'; badge.textContent = 'Completed'; }
+    } else {
+      if (card)   card.classList.remove('is-done');
+      if (circle) { circle.classList.remove('done'); circle.innerHTML = cb.value; }
+      if (badge)  { badge.className = badge.className.replace(/bg-\S+ text-\S+/g,'') + ' bg-primary-subtle text-primary'; badge.textContent = 'Step ' + cb.value; }
+    }
+  });
+  const pct = Math.round(done / total * 100);
+  const bar = document.getElementById('mainProgressBar');
+  const lbl = document.getElementById('pctLabel');
+  const txt = document.getElementById('pctText');
+  const cnt = document.getElementById('completedCount');
+  const dc  = document.getElementById('doneCount');
+  const rc  = document.getElementById('remCount');
+  const hdr = document.getElementById('hdrPct');
+  if (bar) bar.style.width = pct + '%';
+  if (txt) txt.textContent = pct + '%';
+  if (lbl) lbl.textContent = pct + '%';
+  if (cnt) cnt.textContent = done;
+  if (dc)  dc.textContent  = done;
+  if (rc)  rc.textContent  = total - done;
+  if (hdr) hdr.textContent = pct + '%';
+}
+</script>
+{% endblock %}
